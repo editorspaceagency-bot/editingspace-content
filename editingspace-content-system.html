@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EditingSpace — Content & Hook System</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#141412;--s1:#1C1C1A;--s2:#222220;--s3:#2A2A28;
+  --border:#2E2E2C;--border2:#3A3A38;
+  --white:#F0EDE8;--muted:#888884;--dim:#4A4A48;
+  --orange:#C25A0C;--orange-dim:rgba(194,90,12,0.10);--orange-border:rgba(194,90,12,0.25);
+  --teal:#007C7E;--teal-dim:rgba(0,124,126,0.10);--teal-border:rgba(0,124,126,0.25);
+  --green:#2A7A4A;--green-dim:rgba(42,122,74,0.10);--green-border:rgba(42,122,74,0.25);
+  --red:#8A2020;--red-dim:rgba(138,32,32,0.10);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--white);font-size:14px;line-height:1.6;min-height:100vh;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:rgba(20,20,18,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-logo{font-family:monospace;font-size:11px;letter-spacing:0.14em;color:var(--orange);}
+.nav-logo span{color:var(--dim);}
+.nav-links{display:flex;gap:4px;}
+.nav-link{font-family:monospace;font-size:9px;letter-spacing:0.1em;padding:5px 10px;border-radius:3px;cursor:pointer;color:var(--dim);border:1px solid transparent;transition:all .15s;background:none;text-transform:uppercase;}
+.nav-link:hover{color:var(--orange);border-color:var(--orange-border);}
+.nav-link.active{color:var(--orange);background:var(--orange-dim);border-color:var(--orange-border);}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 52px);}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}}
+
+/* SIDEBAR */
+.sidebar{border-right:1px solid var(--border);padding:24px 0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
+.sidebar-section{padding:0 16px;margin-bottom:24px;}
+.sidebar-label{font-family:monospace;font-size:9px;letter-spacing:0.15em;color:var(--dim);margin-bottom:10px;padding:0 4px;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;cursor:pointer;color:var(--muted);font-size:12px;transition:all .15s;border:1px solid transparent;margin-bottom:2px;}
+.sidebar-item:hover{color:var(--white);background:var(--s2);}
+.sidebar-item.active{color:var(--orange);background:var(--orange-dim);border-color:var(--orange-border);}
+.sidebar-item .s-icon{font-size:10px;flex-shrink:0;}
+.sidebar-item .s-num{font-family:monospace;font-size:9px;color:var(--dim);flex-shrink:0;}
+@media(max-width:800px){.sidebar{display:none;}}
+
+/* MAIN */
+.main{padding:40px 36px 80px;}
+@media(max-width:600px){.main{padding:24px 16px 60px;}}
+
+/* PAGE SECTIONS */
+.page{display:none;}
+.page.active{display:block;}
+
+/* SECTION HEAD */
+.s-head{margin-bottom:28px;}
+.s-eyebrow{font-family:monospace;font-size:9px;letter-spacing:0.2em;color:var(--orange);margin-bottom:10px;}
+.s-title{font-family:'Georgia',serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px;}
+.s-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:560px;}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,var(--orange),transparent);margin:28px 0;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin-bottom:10px;}
+.card-orange{border-left:3px solid var(--orange);}
+.card-teal{border-left:3px solid var(--teal);}
+.card-green{border-left:3px solid var(--green);}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* LABELS */
+.label{font-family:monospace;font-size:9px;letter-spacing:0.14em;color:var(--orange);margin-bottom:8px;display:block;}
+.label-teal{color:var(--teal);}
+.label-green{color:var(--green);}
+.label-dim{color:var(--dim);}
+
+/* SCRIPT BOX */
+.script{background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:4px;padding:12px 14px;margin:8px 0;font-size:12px;color:var(--white);line-height:1.8;font-style:italic;}
+.script-orange{background:var(--orange-dim);border-color:var(--orange-border);}
+.script-green{background:var(--green-dim);border-color:var(--green-border);}
+
+/* HOOK FORMULA */
+.hook-formula{background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:10px 14px;margin-bottom:6px;font-family:monospace;font-size:11px;color:var(--teal);}
+.hook-example{font-size:12px;color:var(--muted);margin-top:4px;font-family:inherit;font-style:italic;}
+
+/* TIMELINE */
+.timeline{display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:8px;}
+.t-time{background:var(--s2);border-top:2px solid var(--orange);border-radius:0 0 4px 4px;padding:8px;text-align:center;font-family:monospace;font-size:9px;color:var(--orange);display:flex;align-items:center;justify-content:center;}
+.t-body{background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:10px 14px;}
+.t-label{font-size:11px;font-weight:600;margin-bottom:4px;}
+.t-text{font-size:11px;color:var(--muted);line-height:1.65;}
+
+/* PILL ROW */
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+.pill{font-family:monospace;font-size:9px;letter-spacing:0.08em;padding:4px 10px;border-radius:3px;border:1px solid var(--border2);color:var(--dim);}
+.pill-orange{background:var(--orange-dim);border-color:var(--orange-border);color:var(--orange);}
+.pill-teal{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal);}
+.pill-green{background:var(--green-dim);border-color:var(--green-border);color:var(--green);}
+
+/* ALERT */
+.alert{padding:12px 16px;border-radius:4px;margin:12px 0;font-size:12px;color:var(--muted);line-height:1.7;}
+.alert-orange{background:var(--orange-dim);border:1px solid var(--orange-border);}
+.alert-teal{background:var(--teal-dim);border:1px solid var(--teal-border);}
+.alert-red{background:var(--red-dim);border:1px solid rgba(138,32,32,0.3);}
+.alert strong{color:var(--white);}
+
+/* CHECKLIST */
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:var(--s2);border:1px solid transparent;border-radius:4px;margin-bottom:6px;cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:var(--border2);}
+.check-item.done{background:var(--teal-dim);border-color:var(--teal-border);}
+.check-box{width:16px;height:16px;border:2px solid var(--border2);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s;}
+.check-item.done .check-box{background:var(--teal);border-color:var(--teal);}
+.check-text{font-size:12px;line-height:1.5;}
+.check-item.done .check-text{color:var(--dim);text-decoration:line-through;}
+.check-sub{font-family:monospace;font-size:10px;color:var(--dim);margin-top:2px;}
+
+/* WEEK CARD */
+.week-card{background:var(--s1);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:10px;}
+.week-head{padding:10px 16px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.week-num{font-family:monospace;font-size:9px;color:var(--orange);letter-spacing:0.1em;}
+.week-title{font-size:13px;font-weight:600;}
+.week-body{padding:14px 16px;}
+.day-row{display:grid;grid-template-columns:90px 1fr;gap:10px;margin-bottom:8px;align-items:start;}
+.day-label{font-family:monospace;font-size:9px;color:var(--teal);padding-top:2px;}
+.day-text{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* STAT ROW */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0;}
+@media(max-width:600px){.stat-grid{grid-template-columns:1fr 1fr;}}
+.stat-box{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center;}
+.stat-num{font-family:'Georgia',serif;font-size:22px;font-weight:700;color:var(--orange);margin-bottom:2px;}
+.stat-label{font-family:monospace;font-size:9px;color:var(--dim);letter-spacing:0.08em;}
+
+/* HOOK TYPE CARD */
+.hook-card{background:var(--s1);border:1px solid var(--border);border-top:2px solid var(--orange);border-radius:0 0 6px 6px;padding:16px;margin-bottom:10px;}
+.hook-type-badge{font-family:monospace;font-size:8px;letter-spacing:0.15em;color:var(--orange);margin-bottom:8px;}
+.hook-name{font-size:14px;font-weight:700;margin-bottom:6px;}
+.hook-formula-box{background:var(--bg);border:1px solid var(--border2);border-radius:3px;padding:8px 12px;font-family:monospace;font-size:11px;color:var(--teal);margin-bottom:10px;}
+
+/* STRUCTURE BLOCK */
+.struct-row{display:grid;grid-template-columns:100px 1fr;gap:10px;margin-bottom:8px;}
+.struct-label{background:var(--s3);border-top:2px solid var(--orange);border-radius:0 0 4px 4px;padding:8px;font-family:monospace;font-size:9px;color:var(--orange);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.struct-time{font-size:10px;color:var(--dim);}
+.struct-body{background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:10px 14px;}
+
+/* FOOTER */
+footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);padding:24px;border-top:1px solid var(--border);margin-top:40px;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">EDITINGSPACE <span>/ Content System</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('research')">Research</button>
+    <button class="nav-link" onclick="showPage('hooks')">Hooks</button>
+    <button class="nav-link" onclick="showPage('scripting')">Scripting</button>
+    <button class="nav-link" onclick="showPage('plan')">30-Day Plan</button>
+    <button class="nav-link" onclick="showPage('ritual')">Weekly Ritual</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">SYSTEM</div>
+    <div class="sidebar-item active" onclick="showPage('research')"><span class="s-icon">◈</span><span>Hook Research</span></div>
+    <div class="sidebar-item" onclick="showPage('hooks')"><span class="s-icon">✦</span><span>Hook Types</span></div>
+    <div class="sidebar-item" onclick="showPage('scripting')"><span class="s-icon">◎</span><span>Scripting System</span></div>
+    <div class="sidebar-item" onclick="showPage('plan')"><span class="s-icon">▲</span><span>30-Day Plan</span></div>
+    <div class="sidebar-item" onclick="showPage('ritual')"><span class="s-icon">⏱</span><span>Weekly Ritual</span></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">THE RULE</div>
+    <div style="padding:10px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:4px;font-size:11px;color:var(--muted);line-height:1.7;">
+      <span style="color:var(--orange);font-family:monospace;font-size:9px;display:block;margin-bottom:4px;">1.7 SECONDS</span>
+      You have 1.7 seconds before someone decides to scroll. Everything in this system is built around that number.
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">PILLARS</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="padding:8px 10px;background:var(--s2);border-radius:3px;font-size:11px;">
+        <div style="font-family:monospace;font-size:9px;color:var(--orange);margin-bottom:2px;">40% — PROOF</div>
+        <div style="color:var(--muted);">Before/after edits</div>
+      </div>
+      <div style="padding:8px 10px;background:var(--s2);border-radius:3px;font-size:11px;">
+        <div style="font-family:monospace;font-size:9px;color:var(--teal);margin-bottom:2px;">35% — EDUCATION</div>
+        <div style="color:var(--muted);">Tips & frameworks</div>
+      </div>
+      <div style="padding:8px 10px;background:var(--s2);border-radius:3px;font-size:11px;">
+        <div style="font-family:monospace;font-size:9px;color:var(--dim);margin-bottom:2px;">25% — JOURNEY</div>
+        <div style="color:var(--muted);">Building in public</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- PAGE: RESEARCH -->
+<div class="page active" id="page-research">
+  <div class="s-head">
+    <div class="s-eyebrow">SYSTEM 01 — HOOK RESEARCH</div>
+    <div class="s-title">Every Sunday. 20 minutes.</div>
+    <div class="s-sub">You don't invent hooks. You observe what stops scrolls and extract the pattern. This is your weekly intelligence system.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:20px;">
+    <span class="label">THE CORE RULE</span>
+    <div class="alert alert-orange"><strong>TikTok data:</strong> 63% of videos with the highest click-through rates hook viewers within the first 3 seconds. The average mobile viewing decision is <strong>1.7 seconds</strong>. You don't have time for a warm-up. The hook IS the video.</div>
+  </div>
+
+  <span class="label">5-STEP RESEARCH PROCESS</span>
+  <div style="margin-bottom:20px;">
+    <div class="timeline">
+      <div class="t-time">STEP 01</div>
+      <div class="t-body">
+        <div class="t-label">Open TikTok or Instagram — search these terms</div>
+        <div class="pill-row">
+          <span class="pill-orange pill">"video editing tips"</span>
+          <span class="pill-teal pill">"content creator mistakes"</span>
+          <span class="pill-orange pill">"how I grew my channel"</span>
+          <span class="pill-teal pill">"video editor"</span>
+          <span class="pill pill">"editing before after"</span>
+        </div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time">STEP 02</div>
+      <div class="t-body">
+        <div class="t-label">Filter by Most Viewed this week</div>
+        <div class="t-text">Not all time. Not this month. This week only. Algorithm trends shift fast.</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time">STEP 03</div>
+      <div class="t-body">
+        <div class="t-label">Watch only the first 3 seconds of the top 10 videos</div>
+        <div class="t-text">Don't watch the full video. Just the hook. For each one, ask: What type is this? Did it make me want to keep watching? Why?</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time">STEP 04</div>
+      <div class="t-body">
+        <div class="t-label">Log what you find — build your swipe file</div>
+        <div class="t-text">Write the exact words used. Categorize by hook type (see Hook Types section). Keep a running Notion doc or Notes file called "Hook Swipe File."</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time">STEP 05</div>
+      <div class="t-body">
+        <div class="t-label">Identify patterns — not examples</div>
+        <div class="t-text">Don't copy the hook. Extract the formula. "I made $10K from one video" → Formula: Result + Timeframe. Now you can write 20 hooks from that structure.</div>
+      </div>
+    </div>
+  </div>
+
+  <span class="label">ANALYTICS CHECK — after you post</span>
+  <div class="grid-2">
+    <div class="card card-orange">
+      <span class="label">DROP-OFF IN FIRST 2 SECONDS</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Hook problem</div>
+      <div style="font-size:12px;color:var(--muted);">The hook didn't stop the scroll. Rewrite it. Test a different hook type on the same topic.</div>
+    </div>
+    <div class="card card-teal">
+      <span class="label label-teal">DROP-OFF AT 5–10 SECONDS</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Content problem</div>
+      <div style="font-size:12px;color:var(--muted);">Hook worked but the video didn't deliver on the promise fast enough. Tighten the first 10 seconds.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-teal" style="margin-top:14px;">
+    <strong>Build your hook library over time.</strong> Every time a video outperforms your average, write down the exact hook and categorize it. After 30 days you'll have a personal library of formulas that work specifically for your account and audience.
+  </div>
+</div>
+
+<!-- PAGE: HOOKS -->
+<div class="page" id="page-hooks">
+  <div class="s-head">
+    <div class="s-eyebrow">SYSTEM 02 — HOOK TYPES</div>
+    <div class="s-title">5 types. Rotate all of them.</div>
+    <div class="s-sub">The top 3 most consistently viral in 2026: Contrarian Claim, Mistake Warning, and List Tease. But rotate all 5 — repeating one formula trains your audience to skip your opener.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="hook-card">
+    <div class="hook-type-badge">TYPE 01 — HIGHEST CONVERTING FOR NEW ACCOUNTS</div>
+    <div class="hook-name">Mistake Warning</div>
+    <div class="hook-formula-box">Formula: "[Your audience] is making this mistake and it's killing their [result]"</div>
+    <span class="label">YOUR EXAMPLES — USE THESE</span>
+    <div class="script script-orange">"Most video editors are killing client retention and don't even know it"</div>
+    <div class="script script-orange">"This editing mistake is why your videos stop at 300 views"</div>
+    <div class="script script-orange">"You're losing viewers at second 4 — here's exactly why"</div>
+    <div class="alert alert-orange" style="margin-top:8px;"><strong>Why it works:</strong> Triggers self-reflection immediately. Viewers pause to check if they're making the same error. Filters your exact target audience in the first second.</div>
+  </div>
+
+  <div class="hook-card" style="border-top-color:var(--teal);">
+    <div class="hook-type-badge" style="color:var(--teal);">TYPE 02 — BEST FOR AUTHORITY BUILDING</div>
+    <div class="hook-name">Contrarian Claim</div>
+    <div class="hook-formula-box" style="color:var(--orange);">Formula: "Everyone says [common belief]. They're wrong."</div>
+    <span class="label">YOUR EXAMPLES</span>
+    <div class="script">"Good editing doesn't save a bad hook. Nobody tells you this."</div>
+    <div class="script">"Posting more won't grow your channel. This one thing will."</div>
+    <div class="script">"You don't need expensive gear. You need this."</div>
+    <div class="alert alert-teal" style="margin-top:8px;"><strong>Why it works:</strong> Challenges assumptions. Viewers stay to see the reasoning and often comment to agree or disagree — boosting algorithm reach through engagement.</div>
+  </div>
+
+  <div class="hook-card" style="border-top-color:var(--green);">
+    <div class="hook-type-badge" style="color:var(--green);">TYPE 03 — BEST FOR PROOF CONTENT</div>
+    <div class="hook-name">Result First</div>
+    <div class="hook-formula-box" style="color:var(--green);">Formula: "I [specific result] — here's exactly how"</div>
+    <span class="label">YOUR EXAMPLES</span>
+    <div class="script script-green">"I re-edited this video and watch time went from 18% to 64%"</div>
+    <div class="script script-green">"This one edit change doubled retention on every video I touched"</div>
+    <div class="script script-green">"I built a video editing agency from zero in 30 days — here's the full system"</div>
+    <div class="alert" style="background:var(--green-dim);border-color:var(--green-border);margin-top:8px;"><strong>Why it works:</strong> Credibility before curiosity. Viewers see the result first and feel compelled to learn how. Proof-based hooks reduce skepticism instantly.</div>
+  </div>
+
+  <div class="hook-card">
+    <div class="hook-type-badge">TYPE 04 — BEST FOR EDUCATION CONTENT</div>
+    <div class="hook-name">Curiosity Gap</div>
+    <div class="hook-formula-box">Formula: "The thing nobody tells you about [topic]"</div>
+    <span class="label">YOUR EXAMPLES</span>
+    <div class="script script-orange">"The thing nobody tells you about why your edits look cheap"</div>
+    <div class="script script-orange">"What separates a $500 editor from a $3,000 editor — it's not the software"</div>
+    <div class="script script-orange">"Why your videos look good but feel boring — explained in 60 seconds"</div>
+  </div>
+
+  <div class="hook-card" style="border-top-color:var(--teal);">
+    <div class="hook-type-badge" style="color:var(--teal);">TYPE 05 — BEST FOR DIRECT TARGETING</div>
+    <div class="hook-name">Direct Call-Out</div>
+    <div class="hook-formula-box" style="color:var(--teal);">Formula: "If you [situation] — watch this"</div>
+    <span class="label">YOUR EXAMPLES</span>
+    <div class="script">"If your videos are getting views but no followers — watch this"</div>
+    <div class="script">"If you've been editing for a year and still have no clients — this is why"</div>
+    <div class="script">"If you're a creator spending 10 hours a week editing yourself — stop"</div>
+    <div class="alert alert-teal" style="margin-top:8px;"><strong>Why it works:</strong> Filters viewers precisely. Only the people you want to reach feel addressed. Better audience = better retention = better algorithm performance.</div>
+  </div>
+
+  <div class="alert alert-orange" style="margin-top:6px;">
+    <strong>3-SECOND RULE:</strong> Every hook must land in under 3 seconds. That means 10–14 words maximum when spoken. If you can't say it in 10–14 words, cut it down. Spoken hook + text overlay on screen + visual movement = 3x higher 3-second retention.
+  </div>
+</div>
+
+<!-- PAGE: SCRIPTING -->
+<div class="page" id="page-scripting">
+  <div class="s-head">
+    <div class="s-eyebrow">SYSTEM 03 — SCRIPTING</div>
+    <div class="s-title">Script before you record. Every time.</div>
+    <div class="s-sub">Never wing it. A scripted video takes 30 minutes to write and 10 minutes to record. An unscripted video takes 2 hours to record and still sounds unscripted.</div>
+  </div>
+  <div class="divider"></div>
+
+  <span class="label">THE 4-PART VIDEO STRUCTURE</span>
+  <div style="margin-bottom:20px;">
+    <div class="struct-row">
+      <div class="struct-label">HOOK<span class="struct-time">0–3 sec</span></div>
+      <div class="struct-body">
+        <div style="font-size:13px;font-weight:600;margin-bottom:5px;">One sentence. 10–14 words max.</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">Spoken + bold text overlay on screen simultaneously. Add a zoom cut or visual movement on frame 1. Never start with silence, music, or slow intro. Straight into the hook.</div>
+        <div class="hook-formula" style="margin-top:8px;">Example: "This editing mistake is why your videos stop at 300 views"</div>
+      </div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label" style="border-top-color:var(--teal);">CONTEXT<span class="struct-time">3–8 sec</span></div>
+      <div class="struct-body">
+        <div style="font-size:13px;font-weight:600;margin-bottom:5px;">Why should they trust you on this?</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">One line only. Establish credibility fast. Then move on.</div>
+        <div class="script" style="margin-top:8px;">"I've edited content for creators in this niche — here's what I keep seeing."</div>
+      </div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label" style="border-top-color:var(--teal);">CONTENT<span class="struct-time">8–45 sec</span></div>
+      <div class="struct-body">
+        <div style="font-size:13px;font-weight:600;margin-bottom:5px;">The actual value. 3 points maximum.</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">Show, don't tell. Screen recordings, before/after clips, zooms on the specific moment you're talking about. Keep cutting — no dead air, no pauses longer than 0.5 seconds.</div>
+        <div class="alert alert-teal" style="margin-top:8px;"><strong>Rule:</strong> Every sentence earns the next. If a sentence doesn't add new information or push the story forward, cut it.</div>
+      </div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label" style="border-top-color:var(--green);">CTA<span class="struct-time">Last 3 sec</span></div>
+      <div class="struct-body">
+        <div style="font-size:13px;font-weight:600;margin-bottom:5px;">One ask. Never two.</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">Pick one and only one CTA per video. Two CTAs = zero action.</div>
+        <div class="grid-2" style="margin-top:8px;">
+          <div class="script script-green">"Follow for more — I post editing tips every week"</div>
+          <div class="script script-green">"Comment 'AUDIT' and I'll review your channel for free"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <span class="label">PREMIERE PRO HOOK SETUP</span>
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card card-orange">
+      <span class="label">VISUAL LAYER</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Add a fast zoom cut (1.05x → 1.0x) on frame 1. Motion in the first frame stops the algorithm's test scroll. Takes 10 seconds in Premiere.</div>
+    </div>
+    <div class="card card-teal">
+      <span class="label label-teal">TEXT LAYER</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Bold caption on screen from second 0. Same words you're speaking. Syntax Amber (#C25A0C) for trigger words. Off-white for the rest. Always.</div>
+    </div>
+    <div class="card card-teal">
+      <span class="label label-teal">AUDIO LAYER</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Start speaking on frame 1. No music intro. No silence. Impact SFX on the first cut. Voice modulation — go up in energy on the hook, not flat delivery.</div>
+    </div>
+    <div class="card card-orange">
+      <span class="label">PACING</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Cut every breath and pause. Target: no gap longer than 0.3 seconds between words. Watch your edit on mute first — if it's boring silent, add more visual cuts.</div>
+    </div>
+  </div>
+
+  <span class="label">SCRIPT TEMPLATE — COPY THIS EVERY TIME</span>
+  <div style="background:var(--s2);border:1px solid var(--border2);border-radius:6px;padding:20px;font-family:monospace;font-size:12px;color:var(--muted);line-height:2;">
+    <div style="color:var(--orange);">// HOOK (0–3 sec) — 10-14 words max</div>
+    <div style="color:var(--white);margin-bottom:12px;">[Your hook here — one sentence, spoken + text overlay]</div>
+    <div style="color:var(--teal);">// CONTEXT (3–8 sec)</div>
+    <div style="color:var(--white);margin-bottom:12px;">"I've [credibility line]. Here's what I keep seeing..."</div>
+    <div style="color:var(--teal);">// POINT 1 (8–20 sec)</div>
+    <div style="color:var(--white);margin-bottom:12px;">[First point — show visually if possible]</div>
+    <div style="color:var(--teal);">// POINT 2 (20–32 sec)</div>
+    <div style="color:var(--white);margin-bottom:12px;">[Second point]</div>
+    <div style="color:var(--teal);">// POINT 3 (32–42 sec)</div>
+    <div style="color:var(--white);margin-bottom:12px;">[Third point — strongest one goes last]</div>
+    <div style="color:var(--green);">// CTA (last 3 sec)</div>
+    <div style="color:var(--white);">[One ask only]</div>
+  </div>
+
+  <div class="alert alert-orange" style="margin-top:14px;">
+    <strong>Before you record:</strong> Read the script out loud. If it sounds robotic, rewrite it. You're not writing an essay — you're writing how you actually talk. Short sentences. Direct words. No filler.
+  </div>
+</div>
+
+<!-- PAGE: PLAN -->
+<div class="page" id="page-plan">
+  <div class="s-head">
+    <div class="s-eyebrow">SYSTEM 04 — 30-DAY PLAN</div>
+    <div class="s-title">You are your first client.</div>
+    <div class="s-sub">Every video you post is a live portfolio piece, an English improvement session, and a proof of concept for EditingSpace. Post 3x per week minimum. Mon / Wed / Fri.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-num">3x</div><div class="stat-label">per week</div></div>
+    <div class="stat-box"><div class="stat-num">12</div><div class="stat-label">videos month 1</div></div>
+    <div class="stat-box"><div class="stat-num">30</div><div class="stat-label">days to proof</div></div>
+    <div class="stat-box"><div class="stat-num">Day 31</div><div class="stat-label">outreach starts</div></div>
+  </div>
+
+  <span class="label" style="margin-top:20px;">CONTENT PILLARS — WEEKLY ROTATION</span>
+  <div class="grid-3" style="margin-bottom:20px;">
+    <div class="card" style="border-top:2px solid var(--orange);">
+      <span class="label">MONDAY — PROOF (40%)</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Before / After edits</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Take a real public video. Re-edit it. Show the comparison. This is your most powerful portfolio piece.</div>
+      <div class="script script-orange">"I re-edited this creator's video — watch the difference"</div>
+      <div class="script script-orange">"Before vs after — what professional editing actually looks like"</div>
+    </div>
+    <div class="card" style="border-top:2px solid var(--teal);">
+      <span class="label label-teal">WEDNESDAY — EDUCATION (35%)</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Tips, mistakes, frameworks</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Things creators need to know. Position yourself as the expert, not just the technician.</div>
+      <div class="script">"3 editing mistakes killing your retention"</div>
+      <div class="script">"The 3-second rule every creator needs to know"</div>
+    </div>
+    <div class="card" style="border-top:2px solid var(--dim);">
+      <span class="label label-dim">FRIDAY — JOURNEY (25%)</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Building in public</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Raw, real, honest. Building EditingSpace from Bangladesh. Your English improving in real time. This builds trust faster than any other content type.</div>
+      <div class="script script-orange">"Day 1 of building a video editing agency from scratch"</div>
+      <div class="script script-orange">"Honest update — what's working and what's not"</div>
+    </div>
+  </div>
+
+  <span class="label">WEEK BY WEEK</span>
+  <div class="week-card">
+    <div class="week-head"><span class="week-num">WEEK 01</span><span class="week-title">Setup & First 3 Videos</span></div>
+    <div class="week-body">
+      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Set up TikTok + Instagram properly. Profile photo, bio, link. Bio must say exactly what you do and who you help.</div></div>
+      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 1 — Journey: "Day 1 of building a video editing agency." Raw, honest, direct to camera. Don't overthink it.</div></div>
+      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 2 — Education: Pick one editing tip you know well. Write the script Sunday. Record Wednesday. Edit Thursday. Post Friday.</div></div>
+    </div>
+  </div>
+  <div class="week-card">
+    <div class="week-head"><span class="week-num">WEEK 02</span><span class="week-title">First Proof Content</span></div>
+    <div class="week-body">
+      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 3 — First before/after. Find a public YouTube video in your niche. Re-edit it in Premiere. Show the transformation. This is your most important video.</div></div>
+      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 4 — Education: "The one thing killing your video retention." Use hook Type 1 (Mistake Warning).</div></div>
+      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 5 — Journey: "What I learned from my first week posting." Honest. Real numbers. Real reactions.</div></div>
+    </div>
+  </div>
+  <div class="week-card">
+    <div class="week-head"><span class="week-num">WEEK 03</span><span class="week-title">Find Your Best Hook Type</span></div>
+    <div class="week-body">
+      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 6 — Proof. Second before/after. Different niche this time if possible.</div></div>
+      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 7 — Education. Try hook Type 2 (Contrarian Claim) this week. Compare performance to week 1–2 hooks.</div></div>
+      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 8 — Journey. "The hardest part of building this agency so far." Vulnerability builds audience faster than perfection.</div></div>
+    </div>
+  </div>
+  <div class="week-card">
+    <div class="week-head"><span class="week-num">WEEK 04</span><span class="week-title">Review + Outreach Prep</span></div>
+    <div class="week-body">
+      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 9 — Proof. Third before/after. You now have a portfolio of 3 transformation videos.</div></div>
+      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 10 — Education. Use your best-performing hook type from the past 3 weeks. Double down on what worked.</div></div>
+      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 11 — Journey. "30 days of building EditingSpace — here's what happened." Review your numbers. Be honest. This video will perform well.</div></div>
+    </div>
+  </div>
+
+  <div class="alert alert-teal" style="margin-top:6px;">
+    <strong>Day 31:</strong> You now have 11+ videos, 3 before/after portfolio pieces, a growing audience, and real analytics data. Outreach starts here. Your DMs now have a profile behind them — not a blank page.
+  </div>
+</div>
+
+<!-- PAGE: RITUAL -->
+<div class="page" id="page-ritual">
+  <div class="s-head">
+    <div class="s-eyebrow">SYSTEM 05 — WEEKLY RITUAL</div>
+    <div class="s-title">Every Sunday. 60 minutes total.</div>
+    <div class="s-sub">This is the operating system behind the content. Do this every Sunday night and you will never sit down to record without knowing exactly what you're making and why.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="timeline">
+    <div class="t-time" style="border-top-color:var(--teal);">SUN<br>4:00 PM</div>
+    <div class="t-body">
+      <div class="t-label">Hook Research — 20 minutes</div>
+      <div class="t-text">Open TikTok. Search your 4 terms. Watch first 3 seconds of top 10 videos. Write down what stopped your scroll and why. Add best hooks to your swipe file. Done.</div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="t-time" style="border-top-color:var(--orange);">SUN<br>4:20 PM</div>
+    <div class="t-body">
+      <div class="t-label">Analytics Review — 10 minutes</div>
+      <div class="t-text">Check last week's videos. What was the 3-second retention? Which pillar performed best? Which hook type got the most watches? One insight only — don't overthink it. Just note the winner.</div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="t-time" style="border-top-color:var(--orange);">SUN<br>4:30 PM</div>
+    <div class="t-body">
+      <div class="t-label">Plan Next 3 Videos — 10 minutes</div>
+      <div class="t-text">Pick next week's 3 topics. One per pillar. Write the topic and the hook type you'll use. That's it. Don't script yet.</div>
+      <div class="pill-row" style="margin-top:8px;">
+        <span class="pill-orange pill">MON → Proof topic</span>
+        <span class="pill-teal pill">WED → Education topic</span>
+        <span class="pill pill">FRI → Journey topic</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="t-time" style="border-top-color:var(--green);">SUN<br>4:40 PM</div>
+    <div class="t-body">
+      <div class="t-label">Write Monday's Script — 20 minutes</div>
+      <div class="t-text">Use the 4-part structure. Write 3 hook options first — pick the strongest. Write the full script. Read it out loud. If it sounds like an essay, rewrite it. Should sound exactly like how you talk.</div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="t-time" style="border-top-color:var(--green);">SUN<br>5:00 PM</div>
+    <div class="t-body">
+      <div class="t-label">Record Monday's Video — tonight if possible</div>
+      <div class="t-text">Script is done. Camera is ready. Record now. Edit tomorrow morning. Post Monday. Monday's video done on Sunday means you start the week with zero content stress.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <span class="label">HOOK SELECTION CHECKLIST — before you finalise any hook</span>
+  <div id="hook-checks">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Does it land in under 3 seconds when spoken?</div><div class="check-sub">Count the words — 10-14 max</div></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Does it trigger at least one of: curiosity, self-relevance, pattern interrupt, or emotion?</div></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Is it specific enough to be interesting but broad enough to reach your audience?</div><div class="check-sub">"Editing mistakes" = too vague. "The cut at second 4 that kills retention" = specific.</div></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Can you deliver on the promise in the video? If not — rewrite the hook.</div><div class="check-sub">Misleading hooks destroy retention and trust at the same time.</div></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Does it work with the text overlay? Watch the first 3 seconds on mute — does it communicate value without sound?</div></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div><div class="check-text">Is there a visual movement in frame 1? Zoom cut, colour cut, or motion — something that triggers a pause before the hook even registers.</div></div>
+    </div>
+  </div>
+
+  <div class="alert alert-orange" style="margin-top:14px;">
+    <strong>ONE RULE ABOVE EVERYTHING:</strong> Post consistently over posting perfectly. A 7/10 video posted on Monday is worth 10x more than a 10/10 video posted never. The algorithm rewards frequency. Your audience rewards consistency. Your skills improve through repetition. Post.
+  </div>
+
+  <div class="divider"></div>
+  <div class="grid-2">
+    <div class="card card-teal">
+      <span class="label label-teal">ENGLISH IMPROVEMENT TIP</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Record yourself, watch it back, note every word that sounded unnatural. Rewrite those lines. Your English will improve faster through scripting and recording than any course. 30 days of this = significant improvement.</div>
+    </div>
+    <div class="card card-orange">
+      <span class="label">WHEN OUTREACH STARTS</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">Day 31. Not before. You need 10+ videos and 3 proof pieces before a cold DM has real credibility behind it. The content you're building now is what makes the outreach work.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<footer>EditingSpace · Content & Hook System · editingspace.io</footer>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(b => {
+    if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+  });
+  document.querySelectorAll('.sidebar-item').forEach(b => {
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  const box = el.querySelector('.check-box');
+  if(el.classList.contains('done')) {
+    box.innerHTML = '<span style="color:#fff;font-size:9px;font-weight:700;">✓</span>';
+  } else {
+    box.innerHTML = '';
+  }
+}
+</script>
+</body>
+</html>
