@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EditingSpace — Content & Hook System</title>
+<title>EditingSpace — Content & Hook System v2</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -14,17 +14,20 @@
   --teal:#007C7E;--teal-dim:rgba(0,124,126,0.10);--teal-border:rgba(0,124,126,0.25);
   --green:#2A7A4A;--green-dim:rgba(42,122,74,0.10);--green-border:rgba(42,122,74,0.25);
   --red:#8A2020;--red-dim:rgba(138,32,32,0.10);
+  --purple:#5A3A8A;--purple-dim:rgba(90,58,138,0.10);--purple-border:rgba(90,58,138,0.25);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--white);font-size:14px;line-height:1.6;min-height:100vh;}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:50;background:rgba(20,20,18,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav{position:sticky;top:0;z-index:50;background:rgba(20,20,18,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;}
 .nav-logo{font-family:monospace;font-size:11px;letter-spacing:0.14em;color:var(--orange);}
 .nav-logo span{color:var(--dim);}
-.nav-links{display:flex;gap:4px;}
-.nav-link{font-family:monospace;font-size:9px;letter-spacing:0.1em;padding:5px 10px;border-radius:3px;cursor:pointer;color:var(--dim);border:1px solid transparent;transition:all .15s;background:none;text-transform:uppercase;}
+.nav-links{display:flex;gap:3px;flex-wrap:wrap;}
+.nav-link{font-family:monospace;font-size:9px;letter-spacing:0.1em;padding:5px 9px;border-radius:3px;cursor:pointer;color:var(--dim);border:1px solid transparent;transition:all .15s;background:none;text-transform:uppercase;}
 .nav-link:hover{color:var(--orange);border-color:var(--orange-border);}
 .nav-link.active{color:var(--orange);background:var(--orange-dim);border-color:var(--orange-border);}
+.nav-link.new-tab{color:var(--purple);border-color:var(--purple-border);}
+.nav-link.new-tab.active{background:var(--purple-dim);border-color:var(--purple-border);}
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 52px);}
@@ -37,8 +40,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;cursor:pointer;color:var(--muted);font-size:12px;transition:all .15s;border:1px solid transparent;margin-bottom:2px;}
 .sidebar-item:hover{color:var(--white);background:var(--s2);}
 .sidebar-item.active{color:var(--orange);background:var(--orange-dim);border-color:var(--orange-border);}
+.sidebar-item.purple.active{color:var(--purple);background:var(--purple-dim);border-color:var(--purple-border);}
 .sidebar-item .s-icon{font-size:10px;flex-shrink:0;}
-.sidebar-item .s-num{font-family:monospace;font-size:9px;color:var(--dim);flex-shrink:0;}
 @media(max-width:800px){.sidebar{display:none;}}
 
 /* MAIN */
@@ -52,17 +55,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* SECTION HEAD */
 .s-head{margin-bottom:28px;}
 .s-eyebrow{font-family:monospace;font-size:9px;letter-spacing:0.2em;color:var(--orange);margin-bottom:10px;}
+.s-eyebrow.purple{color:var(--purple);}
 .s-title{font-family:'Georgia',serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:8px;}
 .s-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:560px;}
 
 /* DIVIDER */
 .divider{height:1px;background:linear-gradient(90deg,var(--orange),transparent);margin:28px 0;}
+.divider.purple{background:linear-gradient(90deg,var(--purple),transparent);}
 
 /* CARDS */
 .card{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin-bottom:10px;}
 .card-orange{border-left:3px solid var(--orange);}
 .card-teal{border-left:3px solid var(--teal);}
 .card-green{border-left:3px solid var(--green);}
+.card-purple{border-left:3px solid var(--purple);}
 
 /* GRID */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -74,6 +80,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .label-teal{color:var(--teal);}
 .label-green{color:var(--green);}
 .label-dim{color:var(--dim);}
+.label-purple{color:var(--purple);}
 
 /* SCRIPT BOX */
 .script{background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:4px;padding:12px 14px;margin:8px 0;font-size:12px;color:var(--white);line-height:1.8;font-style:italic;}
@@ -97,12 +104,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pill-orange{background:var(--orange-dim);border-color:var(--orange-border);color:var(--orange);}
 .pill-teal{background:var(--teal-dim);border-color:var(--teal-border);color:var(--teal);}
 .pill-green{background:var(--green-dim);border-color:var(--green-border);color:var(--green);}
+.pill-purple{background:var(--purple-dim);border-color:var(--purple-border);color:var(--purple);}
 
 /* ALERT */
 .alert{padding:12px 16px;border-radius:4px;margin:12px 0;font-size:12px;color:var(--muted);line-height:1.7;}
 .alert-orange{background:var(--orange-dim);border:1px solid var(--orange-border);}
 .alert-teal{background:var(--teal-dim);border:1px solid var(--teal-border);}
 .alert-red{background:var(--red-dim);border:1px solid rgba(138,32,32,0.3);}
+.alert-purple{background:var(--purple-dim);border:1px solid var(--purple-border);}
 .alert strong{color:var(--white);}
 
 /* CHECKLIST */
@@ -144,19 +153,100 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .struct-time{font-size:10px;color:var(--dim);}
 .struct-body{background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:10px 14px;}
 
+/* ===================== IDEA PROCESS (manual, free) ===================== */
+.idea-source-card{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:10px;}
+.idea-source-num{font-family:monospace;font-size:9px;color:var(--orange);letter-spacing:0.12em;margin-bottom:6px;}
+.idea-source-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.idea-source-text{font-size:12px;color:var(--muted);line-height:1.7;}
+.bank-table{width:100%;border-collapse:collapse;margin:10px 0;}
+.bank-table th{font-family:monospace;font-size:9px;letter-spacing:0.1em;color:var(--orange);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border2);}
+.bank-table td{font-size:12px;color:var(--white);padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.bank-table tr:last-child td{border-bottom:none;}
+.formula-card{background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:14px 16px;margin-bottom:8px;}
+.formula-top{font-family:monospace;font-size:11px;color:var(--teal);margin-bottom:6px;}
+.formula-bottom{font-size:12px;color:var(--muted);line-height:1.6;}
+.idea-worksheet{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:18px 20px;}
+.ws-row{display:grid;grid-template-columns:130px 1fr;gap:12px;margin-bottom:12px;align-items:start;}
+.ws-row:last-child{margin-bottom:0;}
+.ws-label{font-family:monospace;font-size:9px;letter-spacing:0.1em;color:var(--orange);padding-top:8px;}
+.ws-input{background:var(--s2);border:1px solid var(--border2);border-radius:4px;color:var(--white);font-size:12px;padding:8px 10px;font-family:inherit;width:100%;outline:none;}
+.ws-input:focus{border-color:var(--orange-border);}
+textarea.ws-input{resize:vertical;min-height:36px;line-height:1.5;}
+.saved-ideas-list{margin-top:14px;}
+.saved-idea{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.saved-idea-text{font-size:12px;line-height:1.6;flex:1;}
+.saved-idea-pillar{font-family:monospace;font-size:8px;letter-spacing:0.1em;color:var(--dim);margin-bottom:3px;display:block;}
+.saved-idea-del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;line-height:1;padding:2px 6px;flex-shrink:0;}
+.saved-idea-del:hover{color:var(--red);}
+.ws-save-btn{background:var(--teal);color:#fff;border:none;border-radius:4px;padding:9px 18px;font-family:monospace;font-size:10px;letter-spacing:0.1em;cursor:pointer;transition:opacity .15s;}
+.ws-save-btn:hover{opacity:0.85;}
+
+/* ===================== SCRIPT GENERATOR ===================== */
+.gen-wrap{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.gen-controls{padding:20px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.gen-controls{grid-template-columns:1fr;}}
+.gen-field label{font-family:monospace;font-size:9px;letter-spacing:0.12em;color:var(--orange);display:block;margin-bottom:6px;}
+.gen-field select,.gen-field input{width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:4px;color:var(--white);font-size:12px;padding:8px 10px;outline:none;font-family:inherit;transition:border-color .15s;}
+.gen-field select:focus,.gen-field input:focus{border-color:var(--orange-border);}
+.gen-field select option{background:var(--s2);}
+.gen-topic{grid-column:1/-1;}
+.gen-btn{grid-column:1/-1;background:var(--orange);color:#fff;border:none;border-radius:4px;padding:10px 20px;font-family:monospace;font-size:10px;letter-spacing:0.12em;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gen-btn:hover{opacity:0.88;}
+.gen-btn:disabled{opacity:0.45;cursor:not-allowed;}
+.gen-output{padding:20px;}
+.gen-output.hidden{display:none;}
+.gen-loading{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);}
+.gen-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 1.2s ease-in-out infinite;}
+.gen-dot:nth-child(2){animation-delay:.2s;}
+.gen-dot:nth-child(3){animation-delay:.4s;}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.1);}}
+.script-result{background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:16px 18px;}
+.script-section{margin-bottom:14px;}
+.script-section:last-child{margin-bottom:0;}
+.script-sec-label{font-family:monospace;font-size:9px;letter-spacing:0.12em;margin-bottom:6px;}
+.script-text{font-size:13px;line-height:1.8;color:var(--white);}
+.copy-btn{font-family:monospace;font-size:9px;letter-spacing:0.1em;background:none;border:1px solid var(--border2);border-radius:3px;color:var(--dim);padding:4px 10px;cursor:pointer;float:right;margin-bottom:10px;transition:all .15s;}
+.copy-btn:hover{color:var(--white);border-color:var(--border2);}
+.hook-alt-row{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.hook-alt{background:var(--s2);border:1px solid var(--border);border-radius:3px;padding:8px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.hook-alt:hover{border-color:var(--orange-border);color:var(--white);}
+.hook-alt-text{flex:1;line-height:1.5;}
+.hook-alt-type{font-family:monospace;font-size:8px;color:var(--dim);flex-shrink:0;}
+.ideas-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+@media(max-width:600px){.ideas-grid{grid-template-columns:1fr;}}
+.idea-card{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:12px 14px;cursor:pointer;transition:all .15s;}
+.idea-card:hover{border-color:var(--orange-border);}
+.idea-card .idea-pillar{font-family:monospace;font-size:8px;letter-spacing:0.1em;margin-bottom:5px;}
+.idea-card .idea-title{font-size:12px;font-weight:600;margin-bottom:4px;}
+.idea-card .idea-hook{font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;}
+.gen-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);}
+.gen-tab{font-family:monospace;font-size:9px;letter-spacing:0.1em;padding:10px 16px;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;}
+.gen-tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+.gen-tab-panel{display:none;padding:20px;}
+.gen-tab-panel.active{display:block;}
+.error-box{background:var(--red-dim);border:1px solid rgba(138,32,32,0.3);border-radius:4px;padding:12px 14px;font-size:12px;color:#CC8888;line-height:1.7;}
+
 /* FOOTER */
 footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);padding:24px;border-top:1px solid var(--border);margin-top:40px;}
+
+/* PROGRESS TRACKER */
+.progress-wrap{margin-bottom:20px;}
+.progress-bar-track{background:var(--s2);border-radius:3px;height:6px;overflow:hidden;margin-bottom:6px;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--teal));border-radius:3px;transition:width .4s ease;}
+.progress-meta{display:flex;justify-content:space-between;font-family:monospace;font-size:9px;color:var(--dim);}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">EDITINGSPACE <span>/ Content System</span></div>
+  <div class="nav-logo">EDITINGSPACE <span>/ Content System v2</span></div>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('research')">Research</button>
     <button class="nav-link" onclick="showPage('hooks')">Hooks</button>
     <button class="nav-link" onclick="showPage('scripting')">Scripting</button>
+    <button class="nav-link" onclick="showPage('ideaprocess')">Idea Process</button>
+    <button class="nav-link new-tab" onclick="showPage('generator')">⚡ AI Generator</button>
     <button class="nav-link" onclick="showPage('plan')">30-Day Plan</button>
     <button class="nav-link" onclick="showPage('ritual')">Weekly Ritual</button>
   </div>
@@ -171,6 +261,8 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
     <div class="sidebar-item active" onclick="showPage('research')"><span class="s-icon">◈</span><span>Hook Research</span></div>
     <div class="sidebar-item" onclick="showPage('hooks')"><span class="s-icon">✦</span><span>Hook Types</span></div>
     <div class="sidebar-item" onclick="showPage('scripting')"><span class="s-icon">◎</span><span>Scripting System</span></div>
+    <div class="sidebar-item" onclick="showPage('ideaprocess')"><span class="s-icon">✎</span><span>Idea Process</span></div>
+    <div class="sidebar-item purple" onclick="showPage('generator')"><span class="s-icon">⚡</span><span>AI Script Generator</span></div>
     <div class="sidebar-item" onclick="showPage('plan')"><span class="s-icon">▲</span><span>30-Day Plan</span></div>
     <div class="sidebar-item" onclick="showPage('ritual')"><span class="s-icon">⏱</span><span>Weekly Ritual</span></div>
   </div>
@@ -391,8 +483,14 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
         <div style="font-size:13px;font-weight:600;margin-bottom:5px;">One ask. Never two.</div>
         <div style="font-size:12px;color:var(--muted);line-height:1.65;">Pick one and only one CTA per video. Two CTAs = zero action.</div>
         <div class="grid-2" style="margin-top:8px;">
-          <div class="script script-green">"Follow for more — I post editing tips every week"</div>
-          <div class="script script-green">"Comment 'AUDIT' and I'll review your channel for free"</div>
+          <div>
+            <span class="label label-teal">FOLLOW</span>
+            <div class="script">"Follow for more — I post editing tips every week"</div>
+          </div>
+          <div>
+            <span class="label label-green">ENGAGEMENT</span>
+            <div class="script script-green">"Comment 'AUDIT' and I'll review your channel for free"</div>
+          </div>
         </div>
       </div>
     </div>
@@ -420,68 +518,6 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <span class="label">STORYTELLING FLOW — FOR EDUCATION & PROOF VIDEOS</span>
-  <div class="alert alert-teal" style="margin-bottom:14px;">Use this sequence for Monday (Proof) and Wednesday (Education) videos. For Friday Journey videos — just tell the story honestly. Don't force the framework.</div>
-
-  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
-    <div style="background:var(--s2);border:1px solid var(--orange-border);border-radius:4px;padding:10px 16px;text-align:center;min-width:90px;">
-      <div style="font-family:monospace;font-size:8px;color:var(--orange);letter-spacing:0.1em;margin-bottom:4px;">01</div>
-      <div style="font-size:13px;font-weight:700;">Problem</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:3px;">Your hook</div>
-    </div>
-    <div style="color:var(--dim);font-size:16px;">&#8594;</div>
-    <div style="background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:10px 16px;text-align:center;min-width:90px;">
-      <div style="font-family:monospace;font-size:8px;color:var(--muted);letter-spacing:0.1em;margin-bottom:4px;">02</div>
-      <div style="font-size:13px;font-weight:700;">Impact</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:3px;">Why it matters</div>
-    </div>
-    <div style="color:var(--dim);font-size:16px;">&#8594;</div>
-    <div style="background:var(--teal-dim);border:1px solid var(--teal-border);border-radius:4px;padding:10px 16px;text-align:center;min-width:90px;">
-      <div style="font-family:monospace;font-size:8px;color:var(--teal);letter-spacing:0.1em;margin-bottom:4px;">03</div>
-      <div style="font-size:13px;font-weight:700;">Solution</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:3px;">The actual fix</div>
-    </div>
-    <div style="color:var(--dim);font-size:16px;">&#8594;</div>
-    <div style="background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:10px 16px;text-align:center;min-width:90px;">
-      <div style="font-family:monospace;font-size:8px;color:var(--muted);letter-spacing:0.1em;margin-bottom:4px;">04</div>
-      <div style="font-size:13px;font-weight:700;">Benefit</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:3px;">The result</div>
-    </div>
-    <div style="color:var(--dim);font-size:16px;">&#8594;</div>
-    <div style="background:var(--green-dim);border:1px solid var(--green-border);border-radius:4px;padding:10px 16px;text-align:center;min-width:90px;">
-      <div style="font-family:monospace;font-size:8px;color:var(--green);letter-spacing:0.1em;margin-bottom:4px;">05</div>
-      <div style="font-size:13px;font-weight:700;">CTA</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:3px;">One ask only</div>
-    </div>
-  </div>
-
-  <div class="grid-2" style="margin-bottom:16px;">
-    <div class="card card-orange">
-      <span class="label">EDUCATION VIDEO EXAMPLE</span>
-      <div style="font-size:12px;color:var(--muted);line-height:1.85;">
-        <div style="margin-bottom:6px;"><span style="color:var(--orange);font-family:monospace;font-size:9px;">PROBLEM  &#8594;</span> "This editing mistake is killing your retention"</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--muted);font-family:monospace;font-size:9px;">IMPACT   &#8594;</span> "Creators lose 60% of viewers in the first 8 seconds"</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--teal);font-family:monospace;font-size:9px;">SOLUTION &#8594;</span> Show the exact cut on screen — demonstrate the fix visually</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--muted);font-family:monospace;font-size:9px;">BENEFIT  &#8594;</span> "Do this and watch time increases — algorithm pushes further"</div>
-        <div><span style="color:var(--green);font-family:monospace;font-size:9px;">CTA      &#8594;</span> "Follow — I post editing tips every week"</div>
-      </div>
-    </div>
-    <div class="card card-teal">
-      <span class="label label-teal">PROOF VIDEO EXAMPLE</span>
-      <div style="font-size:12px;color:var(--muted);line-height:1.85;">
-        <div style="margin-bottom:6px;"><span style="color:var(--orange);font-family:monospace;font-size:9px;">PROBLEM  &#8594;</span> "This creator's video had great content but zero retention"</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--muted);font-family:monospace;font-size:9px;">IMPACT   &#8594;</span> "18% watch time means the algorithm never pushed it"</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--teal);font-family:monospace;font-size:9px;">SOLUTION &#8594;</span> Show the re-edit — before vs after side by side</div>
-        <div style="margin-bottom:6px;"><span style="color:var(--muted);font-family:monospace;font-size:9px;">BENEFIT  &#8594;</span> "Same content. Different edit. Watch time went to 64%"</div>
-        <div><span style="color:var(--green);font-family:monospace;font-size:9px;">CTA      &#8594;</span> "Comment AUDIT and I'll review your channel"</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
   <span class="label">SCRIPT TEMPLATE — COPY THIS EVERY TIME</span>
   <div style="background:var(--s2);border:1px solid var(--border2);border-radius:6px;padding:20px;font-family:monospace;font-size:12px;color:var(--muted);line-height:2;">
     <div style="color:var(--orange);">// HOOK (0–3 sec) — 10-14 words max</div>
@@ -500,6 +536,330 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
 
   <div class="alert alert-orange" style="margin-top:14px;">
     <strong>Before you record:</strong> Read the script out loud. If it sounds robotic, rewrite it. You're not writing an essay — you're writing how you actually talk. Short sentences. Direct words. No filler.
+  </div>
+
+  <div class="alert alert-teal" style="margin-top:10px;">
+    <strong>Stuck on what to write about?</strong> Go to <span onclick="showPage('ideaprocess')" style="color:var(--teal);cursor:pointer;text-decoration:underline;">Idea Process</span> first — it's the step that comes before scripting. Once you have a topic, come back here and use the 4-part structure above, or let the <span onclick="showPage('generator')" style="color:var(--purple);cursor:pointer;text-decoration:underline;">⚡ AI Generator</span> draft it for you.
+  </div>
+</div>
+
+<!-- PAGE: IDEA PROCESS -->
+<div class="page" id="page-ideaprocess">
+  <div class="s-head">
+    <div class="s-eyebrow" style="color:var(--teal);">SYSTEM 03B — IDEA PROCESS</div>
+    <div class="s-title">Where scripts actually come from.</div>
+    <div class="s-sub">Before you can write a script, you need a topic. This is the process for never running out of one — six sources you mine every week, plus a worksheet that turns a raw idea into something ready to script.</div>
+  </div>
+  <div class="divider" style="background:linear-gradient(90deg,var(--teal),transparent);"></div>
+
+  <span class="label label-teal">6 IDEA SOURCES — MINE THESE EVERY WEEK</span>
+  <div style="margin-bottom:20px;">
+    <div class="idea-source-card" style="border-left:3px solid var(--orange);">
+      <div class="idea-source-num">SOURCE 01 — YOUR OWN MISTAKES</div>
+      <div class="idea-source-title">Every error you've made is a Mistake Warning video</div>
+      <div class="idea-source-text">Think back to your first month editing. What did you not know? What did a client correct you on? Write down 3 mistakes you used to make. Each one is a ready-made Education video — you're not inventing advice, you're confessing it.</div>
+    </div>
+    <div class="idea-source-card" style="border-left:3px solid var(--teal);">
+      <div class="idea-source-num">SOURCE 02 — CLIENT / VIEWER QUESTIONS</div>
+      <div class="idea-source-title">Anything asked twice is a video</div>
+      <div class="idea-source-text">Keep a running note of any question someone asks you about editing — in comments, DMs, or in person. If it's been asked more than once, other people are silently wondering the same thing. Answer it on camera.</div>
+    </div>
+    <div class="idea-source-card" style="border-left:3px solid var(--green);">
+      <div class="idea-source-num">SOURCE 03 — YOUR SWIPE FILE</div>
+      <div class="idea-source-title">The hook formulas you logged in Hook Research</div>
+      <div class="idea-source-text">Open your swipe file from the Hook Research process. For each formula you saved, ask: "What's my version of this?" A formula like Result + Timeframe doesn't need a new topic — it needs your topic plugged into it.</div>
+    </div>
+    <div class="idea-source-card" style="border-left:3px solid var(--orange);">
+      <div class="idea-source-num">SOURCE 04 — THINGS YOU DID THIS WEEK</div>
+      <div class="idea-source-title">Your actual work is Proof and Journey content</div>
+      <div class="idea-source-text">Did you edit anything this week, even practice? That's a before/after. Did anything about building EditingSpace go well or badly? That's a Journey video. You don't need to invent a topic if you just log what already happened.</div>
+    </div>
+    <div class="idea-source-card" style="border-left:3px solid var(--teal);">
+      <div class="idea-source-num">SOURCE 05 — COMPETITOR GAPS</div>
+      <div class="idea-source-title">What top creators in your niche haven't covered</div>
+      <div class="idea-source-text">While doing Hook Research, notice what's NOT being said. If 10 videos cover "jump cuts" and none cover "audio ducking," that's an opening. Being first on an angle beats being the 50th video on the obvious one.</div>
+    </div>
+    <div class="idea-source-card" style="border-left:3px solid var(--purple);">
+      <div class="idea-source-num">SOURCE 06 — MODELING OTHER CREATORS</div>
+      <div class="idea-source-title">Reverse-engineer what's already working, don't copy it</div>
+      <div class="idea-source-text">This is different from Hook Research. Hook Research studies the first 3 seconds. This studies the whole video's topic and structure. Full process below.</div>
+    </div>
+  </div>
+
+  <div class="divider" style="background:linear-gradient(90deg,var(--purple),transparent);"></div>
+
+  <span class="label label-purple">SOURCE 06 IN DEPTH — THE MODELING PROCESS</span>
+  <div style="margin-bottom:20px;">
+    <div class="timeline">
+      <div class="t-time" style="border-top-color:var(--purple);">STEP 01</div>
+      <div class="t-body">
+        <div class="t-label">Build a list of 10-15 accounts to watch</div>
+        <div class="t-text">Mix of: 2-3 big accounts in video editing/content creation (100K+), 4-5 accounts your exact size or slightly bigger, 3-4 accounts in an adjacent niche (filmmaking, YouTube growth, freelancing). Save this list — don't rebuild it every week.</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time" style="border-top-color:var(--purple);">STEP 02</div>
+      <div class="t-body">
+        <div class="t-label">Watch the FULL video, not just the hook</div>
+        <div class="t-text">This is where it differs from Hook Research. Watch top-performing videos from your list end to end. Ask: What's the topic? What are the 3 points they made? What order did they put them in? What's the CTA?</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time" style="border-top-color:var(--purple);">STEP 03</div>
+      <div class="t-body">
+        <div class="t-label">Strip it down to the bare topic</div>
+        <div class="t-text">Remove their examples, their face, their voice, their specific story. What's left is the topic skeleton. "3 mistakes killing your retention" is a topic skeleton — anyone in any niche could fill it with their own 3 mistakes.</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time" style="border-top-color:var(--purple);">STEP 04</div>
+      <div class="t-body">
+        <div class="t-label">Re-skin it with your own experience</div>
+        <div class="t-text">Plug your own mistakes, your own client stories, your own numbers into their topic skeleton. Same skeleton, completely different video — because your proof, your voice, and your examples are things they don't have.</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-time" style="border-top-color:var(--purple);">STEP 05</div>
+      <div class="t-body">
+        <div class="t-label">Log it in your idea bank with the source tagged</div>
+        <div class="t-text">Use the worksheet below. Tag it "Source 06 — Modeling" and name the account that inspired it. Over time you'll see which accounts consistently give you your best-performing ideas — focus your future watching there.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-purple">
+    <strong>The line between modeling and copying:</strong> Modeling takes the topic and structure. Copying takes the words and footage. If you can watch your finished video next to theirs and the only thing in common is the subject matter — that's modeling, and it's how every creator builds their content. If your script reads close to theirs sentence-for-sentence, that's copying — rewrite it from the topic skeleton, not from their script.
+  </div>
+
+  <div class="alert alert-teal">
+    <strong>Where to do this:</strong> Same Sunday 20-minute slot as Hook Research, but it's a separate pass. Hook Research = study openers across many random videos in your search terms. Modeling = study full videos from your saved list of 10-15 accounts. Different goal, different watch.
+  </div>
+
+  <div class="divider" style="background:linear-gradient(90deg,var(--teal),transparent);"></div>
+
+  <span class="label label-teal">TOPIC → HOOK FORMULA TABLE — fill the gaps yourself</span>
+  <div class="formula-card">
+    <div class="formula-top">[your mistake] → "[Your audience] is making this mistake and it's killing their [result]"</div>
+    <div class="formula-bottom">Example: jump-cutting too fast → "Most editors are jump-cutting so fast it's killing watch time."</div>
+  </div>
+  <div class="formula-card">
+    <div class="formula-top">[common belief about your topic] → "Everyone says [belief]. They're wrong."</div>
+    <div class="formula-bottom">Example: belief = "more cuts = more engaging" → "More cuts doesn't mean more engaging. Nobody tells you this."</div>
+  </div>
+  <div class="formula-card">
+    <div class="formula-top">[something you did + the result] → "I [result] — here's exactly how"</div>
+    <div class="formula-bottom">Example: re-edited a video, retention went up → "I re-edited this video and watch time went from 18% to 64%."</div>
+  </div>
+  <div class="formula-card">
+    <div class="formula-top">[a question you got asked] → "The thing nobody tells you about [topic]"</div>
+    <div class="formula-bottom">Example: asked why videos feel boring → "The thing nobody tells you about why your edits feel boring."</div>
+  </div>
+  <div class="formula-card">
+    <div class="formula-top">[who this is for] → "If you [situation] — watch this"</div>
+    <div class="formula-bottom">Example: creators with views but no growth → "If your videos get views but no new followers — watch this."</div>
+  </div>
+
+  <div class="divider" style="background:linear-gradient(90deg,var(--teal),transparent);"></div>
+
+  <span class="label label-teal">IDEA WORKSHEET — do this every Sunday before you script</span>
+  <div class="idea-worksheet">
+    <div class="ws-row">
+      <div class="ws-label">PILLAR</div>
+      <select class="ws-input" id="ip-pillar">
+        <option value="Proof">Proof — before/after</option>
+        <option value="Education">Education — tip/framework</option>
+        <option value="Journey">Journey — building in public</option>
+      </select>
+    </div>
+    <div class="ws-row">
+      <div class="ws-label">RAW IDEA</div>
+      <textarea class="ws-input" id="ip-raw" placeholder="What happened, what you noticed, what someone asked — just the raw thought, unpolished"></textarea>
+    </div>
+    <div class="ws-row">
+      <div class="ws-label">WHICH SOURCE</div>
+      <select class="ws-input" id="ip-source">
+        <option>Source 01 — My own mistake</option>
+        <option>Source 02 — Client/viewer question</option>
+        <option>Source 03 — Swipe file formula</option>
+        <option>Source 04 — Something I did this week</option>
+        <option>Source 05 — Competitor gap</option>
+        <option>Source 06 — Modeling another creator</option>
+      </select>
+    </div>
+    <div class="ws-row">
+      <div class="ws-label">ACCOUNT (IF SOURCE 06)</div>
+      <input type="text" class="ws-input" id="ip-account" placeholder="@handle or account name you modeled this from — optional" />
+    </div>
+    <div class="ws-row">
+      <div class="ws-label">HOOK ATTEMPT</div>
+      <textarea class="ws-input" id="ip-hook" placeholder="Use the formula table above. 10-14 words max."></textarea>
+    </div>
+    <div class="ws-row">
+      <div class="ws-label"></div>
+      <button class="ws-save-btn" onclick="saveIdea()">SAVE IDEA TO BANK</button>
+    </div>
+  </div>
+
+  <div class="saved-ideas-list" id="saved-ideas-list"></div>
+
+  <div class="alert alert-purple" style="margin-top:14px;">
+    <strong>Once you have a saved idea</strong> with a pillar and a hook attempt, you're ready to script it. Go to <span onclick="showPage('scripting')" style="color:var(--purple);cursor:pointer;text-decoration:underline;">Scripting</span> and drop it into the 4-part structure yourself, or send it straight into the <span onclick="showPage('generator')" style="color:var(--purple);cursor:pointer;text-decoration:underline;">⚡ AI Generator</span> to get a full draft instantly.
+  </div>
+
+  <div class="alert alert-teal">
+    <strong>This list saves in your browser only.</strong> It stays on this device and isn't sent anywhere. Clear your browser data and it's gone — so copy anything important into your swipe file or notes app too.
+  </div>
+</div>
+
+<!-- PAGE: AI GENERATOR -->
+<div class="page" id="page-generator">
+
+  <div class="s-head">
+    <div class="s-eyebrow purple">SYSTEM 03.5 — AI SCRIPT GENERATOR</div>
+    <div class="s-title">Your script, drafted in seconds.</div>
+    <div class="s-sub">Pick your pillar, hook type, and topic. The AI will generate a full 60-second script + 3 alternative hooks you can rotate. Every output follows the 4-part structure.</div>
+  </div>
+  <div class="divider purple"></div>
+
+  <!-- Mode tabs -->
+  <div class="gen-tabs">
+    <button class="gen-tab active" onclick="switchGenTab('script')">Full Script</button>
+    <button class="gen-tab" onclick="switchGenTab('ideas')">Batch Ideas</button>
+    <button class="gen-tab" onclick="switchGenTab('hooks')">Hook Variants</button>
+  </div>
+
+  <!-- TAB: Full Script -->
+  <div class="gen-tab-panel active" id="gtp-script">
+    <div class="gen-wrap">
+      <div class="gen-controls">
+        <div class="gen-field">
+          <label>CONTENT PILLAR</label>
+          <select id="s-pillar">
+            <option value="proof">Proof — Before / After Edit</option>
+            <option value="education">Education — Tips & Frameworks</option>
+            <option value="journey">Journey — Building in Public</option>
+          </select>
+        </div>
+        <div class="gen-field">
+          <label>HOOK TYPE</label>
+          <select id="s-hooktype">
+            <option value="mistake">Type 01 — Mistake Warning</option>
+            <option value="contrarian">Type 02 — Contrarian Claim</option>
+            <option value="result">Type 03 — Result First</option>
+            <option value="curiosity">Type 04 — Curiosity Gap</option>
+            <option value="callout">Type 05 — Direct Call-Out</option>
+          </select>
+        </div>
+        <div class="gen-field gen-topic">
+          <label>YOUR TOPIC / ANGLE <span style="color:var(--dim);">— be specific</span></label>
+          <input type="text" id="s-topic" placeholder="e.g. the jump cut mistake that kills retention at second 4" />
+        </div>
+        <div class="gen-field">
+          <label>VIDEO LENGTH</label>
+          <select id="s-length">
+            <option value="30">30 seconds</option>
+            <option value="60" selected>60 seconds</option>
+            <option value="90">90 seconds</option>
+          </select>
+        </div>
+        <div class="gen-field">
+          <label>CTA GOAL</label>
+          <select id="s-cta">
+            <option value="follow">Get followers</option>
+            <option value="comment">Drive comments</option>
+            <option value="dm">Get DMs / clients</option>
+            <option value="save">Get saves</option>
+          </select>
+        </div>
+        <button class="gen-btn" id="gen-btn-script" onclick="generateScript()">⚡ GENERATE SCRIPT</button>
+      </div>
+      <div class="gen-output hidden" id="gen-output-script">
+        <div class="gen-loading" id="gen-loading-script">
+          <div class="gen-dot"></div><div class="gen-dot"></div><div class="gen-dot"></div>
+          <span>Writing your script...</span>
+        </div>
+        <div id="gen-result-script" style="display:none;">
+          <button class="copy-btn" onclick="copyScript()">COPY SCRIPT</button>
+          <div class="script-result" id="script-content"></div>
+          <div style="margin-top:16px;">
+            <span class="label label-purple">3 ALTERNATIVE HOOKS — pick the strongest</span>
+            <div class="hook-alt-row" id="hook-alts"></div>
+          </div>
+        </div>
+        <div id="gen-error-script" style="display:none;" class="error-box"></div>
+      </div>
+    </div>
+    <div class="alert alert-purple">
+      <strong>How to use this:</strong> Generate → read out loud → rewrite any line that sounds unnatural → record. The AI follows the 4-part structure (Hook → Context → 3 Points → CTA) and keeps each hook under 14 words.
+    </div>
+  </div>
+
+  <!-- TAB: Batch Ideas -->
+  <div class="gen-tab-panel" id="gtp-ideas">
+    <div class="gen-wrap">
+      <div class="gen-controls">
+        <div class="gen-field gen-topic">
+          <label>YOUR NICHE / FOCUS AREA</label>
+          <input type="text" id="i-niche" placeholder="e.g. video editing for YouTubers, freelance editing agency" value="video editing agency, EditingSpace" />
+        </div>
+        <div class="gen-field">
+          <label>HOW MANY IDEAS</label>
+          <select id="i-count">
+            <option value="6">6 ideas (2 per pillar)</option>
+            <option value="9" selected>9 ideas (3 per pillar)</option>
+            <option value="12">12 ideas (4 per pillar)</option>
+          </select>
+        </div>
+        <button class="gen-btn" id="gen-btn-ideas" onclick="generateIdeas()">⚡ GENERATE IDEAS</button>
+      </div>
+      <div class="gen-output hidden" id="gen-output-ideas">
+        <div class="gen-loading" id="gen-loading-ideas">
+          <div class="gen-dot"></div><div class="gen-dot"></div><div class="gen-dot"></div>
+          <span>Generating content ideas...</span>
+        </div>
+        <div id="gen-result-ideas" style="display:none;">
+          <div class="ideas-grid" id="ideas-grid"></div>
+        </div>
+        <div id="gen-error-ideas" style="display:none;" class="error-box"></div>
+      </div>
+    </div>
+    <div class="alert alert-teal">
+      <strong>Tip:</strong> Click any idea card to load it into the Full Script tab and generate a complete script instantly.
+    </div>
+  </div>
+
+  <!-- TAB: Hook Variants -->
+  <div class="gen-tab-panel" id="gtp-hooks">
+    <div class="gen-wrap">
+      <div class="gen-controls">
+        <div class="gen-field gen-topic">
+          <label>YOUR TOPIC</label>
+          <input type="text" id="h-topic" placeholder="e.g. jump cut pacing mistakes that kill retention" />
+        </div>
+        <div class="gen-field gen-topic">
+          <label>GENERATE HOW MANY</label>
+          <select id="h-count">
+            <option value="5">5 hooks (1 per type)</option>
+            <option value="10" selected>10 hooks (2 per type)</option>
+            <option value="15">15 hooks (3 per type)</option>
+          </select>
+        </div>
+        <button class="gen-btn" id="gen-btn-hooks" onclick="generateHooks()">⚡ GENERATE HOOKS</button>
+      </div>
+      <div class="gen-output hidden" id="gen-output-hooks">
+        <div class="gen-loading" id="gen-loading-hooks">
+          <div class="gen-dot"></div><div class="gen-dot"></div><div class="gen-dot"></div>
+          <span>Writing hook variations...</span>
+        </div>
+        <div id="gen-result-hooks" style="display:none;">
+          <div id="hooks-list"></div>
+        </div>
+        <div id="gen-error-hooks" style="display:none;" class="error-box"></div>
+      </div>
+    </div>
+    <div class="alert alert-orange">
+      <strong>Use this for A/B testing.</strong> Generate 10 hooks on the same topic. Post the same video twice with different hooks, 3 days apart. See which one gets more 3-second retention. That's your hook type for this audience.
+    </div>
   </div>
 </div>
 
@@ -622,7 +982,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
     <div class="t-time" style="border-top-color:var(--green);">SUN<br>4:40 PM</div>
     <div class="t-body">
       <div class="t-label">Write Monday's Script — 20 minutes</div>
-      <div class="t-text">Use the 4-part structure. Write 3 hook options first — pick the strongest. Write the full script. Read it out loud. If it sounds like an essay, rewrite it. Should sound exactly like how you talk.</div>
+      <div class="t-text">Use the 4-part structure. Write 3 hook options first — pick the strongest. Write the full script. Read it out loud. If it sounds like an essay, rewrite it. Should sound exactly like how you talk. <span onclick="showPage('generator')" style="color:var(--purple);cursor:pointer;font-weight:600;">Use the AI Generator</span> to draft faster.</div>
     </div>
   </div>
   <div class="timeline">
@@ -683,16 +1043,18 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
 </div><!-- /main -->
 </div><!-- /layout -->
 
-<footer>EditingSpace · Content & Hook System · editingspace.io</footer>
+<footer>EditingSpace · Content & Hook System v2 · editingspace.io</footer>
 
 <script>
+/* ============ NAVIGATION ============ */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
+  const pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
   document.querySelectorAll('.nav-link').forEach(b => {
-    if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
   });
   document.querySelectorAll('.sidebar-item').forEach(b => {
     if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
@@ -703,12 +1065,397 @@ function showPage(id) {
 function toggleCheck(el) {
   el.classList.toggle('done');
   const box = el.querySelector('.check-box');
-  if(el.classList.contains('done')) {
-    box.innerHTML = '<span style="color:#fff;font-size:9px;font-weight:700;">✓</span>';
-  } else {
-    box.innerHTML = '';
+  box.innerHTML = el.classList.contains('done') ? '<span style="color:#fff;font-size:9px;font-weight:700;">✓</span>' : '';
+}
+
+/* ============ GENERATOR TABS ============ */
+function switchGenTab(id) {
+  document.querySelectorAll('.gen-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.gen-tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('gtp-'+id).classList.add('active');
+}
+
+/* ============ AI CALLS ============ */
+async function callClaude(prompt) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      messages: [{role:"user", content: prompt}]
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.content.map(c => c.type === 'text' ? c.text : '').join('');
+}
+
+/* ============ FULL SCRIPT ============ */
+async function generateScript() {
+  const pillar = document.getElementById('s-pillar').value;
+  const hooktype = document.getElementById('s-hooktype').value;
+  const topic = document.getElementById('s-topic').value.trim();
+  const length = document.getElementById('s-length').value;
+  const cta = document.getElementById('s-cta').value;
+
+  if (!topic) { alert('Enter a topic first.'); return; }
+
+  const hooktypeNames = {
+    mistake:'Mistake Warning',contrarian:'Contrarian Claim',result:'Result First',
+    curiosity:'Curiosity Gap',callout:'Direct Call-Out'
+  };
+  const ctaGoals = {
+    follow:'ask them to follow for more tips',comment:'ask them to comment a keyword (e.g. AUDIT, EDIT) to get something free',
+    dm:'tell them to DM you for a free consultation or audit',save:'ask them to save this video for later'
+  };
+  const pillarNames = {proof:'Proof (before/after edit)',education:'Education (tip/framework)',journey:'Journey (building in public)'};
+
+  const prompt = `You are a short-form video script writer for EditingSpace, a video editing agency run by a creator from Bangladesh. Write a complete ${length}-second TikTok/Instagram script for this video.
+
+PILLAR: ${pillarNames[pillar]}
+HOOK TYPE: ${hooktypeNames[hooktype]}
+TOPIC: ${topic}
+CTA GOAL: ${ctaGoals[cta]}
+
+RULES:
+- Hook: 10-14 words max, must match the hook type, sounds conversational
+- Context: 1 sentence only, establishes credibility
+- Content: Exactly 3 points, short punchy sentences, no filler
+- CTA: One ask only, ${ctaGoals[cta]}
+- Tone: direct, confident, no fluff, sounds like how a person actually talks
+- This is for a video editor / agency owner niche
+
+OUTPUT FORMAT (respond ONLY with this JSON, no extra text, no markdown):
+{
+  "hook": "the hook line (10-14 words)",
+  "context": "one credibility line",
+  "point1": "first point (2-3 sentences)",
+  "point2": "second point (2-3 sentences)",
+  "point3": "strongest point goes last (2-3 sentences)",
+  "cta": "the call to action line",
+  "alt_hooks": [
+    {"text": "alternative hook 1", "type": "Mistake Warning"},
+    {"text": "alternative hook 2", "type": "Contrarian Claim"},
+    {"text": "alternative hook 3", "type": "Curiosity Gap"}
+  ]
+}`;
+
+  showGenLoading('script', true);
+
+  try {
+    const raw = await callClaude(prompt);
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    renderScript(data);
+  } catch(e) {
+    showGenError('script', 'Could not generate script. Check your connection and try again. Error: ' + e.message);
+  } finally {
+    showGenLoading('script', false);
   }
 }
+
+function renderScript(data) {
+  const container = document.getElementById('script-content');
+  container.innerHTML = `
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--orange);">// HOOK (0–3 sec)</div>
+      <div class="script-text" style="font-weight:600;font-size:15px;">"${escHtml(data.hook)}"</div>
+    </div>
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--teal);">// CONTEXT (3–8 sec)</div>
+      <div class="script-text">${escHtml(data.context)}</div>
+    </div>
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--teal);">// POINT 1 (8–20 sec)</div>
+      <div class="script-text">${escHtml(data.point1)}</div>
+    </div>
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--teal);">// POINT 2 (20–32 sec)</div>
+      <div class="script-text">${escHtml(data.point2)}</div>
+    </div>
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--teal);">// POINT 3 (32–45 sec)</div>
+      <div class="script-text">${escHtml(data.point3)}</div>
+    </div>
+    <div class="script-section">
+      <div class="script-sec-label" style="color:var(--green);">// CTA (last 3 sec)</div>
+      <div class="script-text" style="font-weight:600;">"${escHtml(data.cta)}"</div>
+    </div>
+  `;
+
+  const altsContainer = document.getElementById('hook-alts');
+  altsContainer.innerHTML = '';
+  (data.alt_hooks||[]).forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'hook-alt';
+    div.innerHTML = `<span class="hook-alt-text">"${escHtml(h.text)}"</span><span class="hook-alt-type">${escHtml(h.type)}</span>`;
+    div.onclick = () => {
+      container.querySelector('.script-text').textContent = '"'+h.text+'"';
+      document.querySelectorAll('.hook-alt').forEach(a=>a.style.background='');
+      div.style.background='var(--orange-dim)';
+      div.style.borderColor='var(--orange-border)';
+    };
+    altsContainer.appendChild(div);
+  });
+
+  document.getElementById('gen-result-script').style.display = 'block';
+  window._lastScript = data;
+}
+
+function copyScript() {
+  if(!window._lastScript) return;
+  const d = window._lastScript;
+  const text = `HOOK: "${d.hook}"\n\nCONTEXT: ${d.context}\n\nPOINT 1: ${d.point1}\n\nPOINT 2: ${d.point2}\n\nPOINT 3: ${d.point3}\n\nCTA: "${d.cta}"`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'COPIED ✓';
+    setTimeout(()=>{btn.textContent='COPY SCRIPT';},2000);
+  });
+}
+
+/* ============ BATCH IDEAS ============ */
+async function generateIdeas() {
+  const niche = document.getElementById('i-niche').value.trim();
+  const count = document.getElementById('i-count').value;
+  if(!niche){alert('Enter your niche first.');return;}
+
+  const perPillar = Math.floor(parseInt(count)/3);
+  const prompt = `You are a content strategist for short-form video. Generate ${count} video ideas for a video editing agency creator (niche: ${niche}).
+
+Distribute evenly: ${perPillar} Proof ideas, ${perPillar} Education ideas, ${perPillar} Journey ideas.
+
+Each idea should have:
+- pillar: "Proof" or "Education" or "Journey"
+- title: short punchy video title (under 10 words)
+- hook: the opening hook line (10-14 words, conversational)
+
+OUTPUT ONLY this JSON array, no extra text, no markdown:
+[
+  {"pillar":"Proof","title":"...","hook":"..."},
+  ...
+]`;
+
+  showGenLoading('ideas', true);
+  try {
+    const raw = await callClaude(prompt);
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    renderIdeas(data);
+  } catch(e) {
+    showGenError('ideas','Could not generate ideas. Try again. Error: '+e.message);
+  } finally {
+    showGenLoading('ideas', false);
+  }
+}
+
+function renderIdeas(ideas) {
+  const grid = document.getElementById('ideas-grid');
+  grid.innerHTML = '';
+  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Journey:'var(--dim)'};
+  ideas.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'idea-card';
+    div.innerHTML = `
+      <div class="idea-pillar" style="color:${colors[idea.pillar]||'var(--muted)'};">${escHtml(idea.pillar||'')}</div>
+      <div class="idea-title">${escHtml(idea.title||'')}</div>
+      <div class="idea-hook">"${escHtml(idea.hook||'')}"</div>
+    `;
+    div.onclick = () => {
+      document.getElementById('s-topic').value = idea.title + ' — ' + idea.hook;
+      if(idea.pillar==='Proof') document.getElementById('s-pillar').value='proof';
+      else if(idea.pillar==='Education') document.getElementById('s-pillar').value='education';
+      else document.getElementById('s-pillar').value='journey';
+      switchGenTabById('script');
+      showPage('generator');
+    };
+    grid.appendChild(div);
+  });
+  document.getElementById('gen-result-ideas').style.display='block';
+}
+
+/* ============ HOOK VARIANTS ============ */
+async function generateHooks() {
+  const topic = document.getElementById('h-topic').value.trim();
+  const count = document.getElementById('h-count').value;
+  if(!topic){alert('Enter your topic first.');return;}
+
+  const prompt = `Generate ${count} hook lines for a TikTok/Instagram video about: "${topic}"
+
+For a video editing agency creator. Distribute across all 5 hook types.
+
+Types:
+1. Mistake Warning: "[audience] is making this mistake and it's killing their [result]"
+2. Contrarian Claim: challenge a common belief about the topic
+3. Result First: lead with a specific result or number
+4. Curiosity Gap: "the thing nobody tells you about [topic]"
+5. Direct Call-Out: "if you [situation] — watch this"
+
+Rules: 10-14 words max per hook. Conversational, no fluff.
+
+OUTPUT ONLY this JSON array:
+[
+  {"hook":"...","type":"Mistake Warning"},
+  ...
+]`;
+
+  showGenLoading('hooks', true);
+  try {
+    const raw = await callClaude(prompt);
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    renderHooks(data);
+  } catch(e) {
+    showGenError('hooks','Could not generate hooks. Try again. Error: '+e.message);
+  } finally {
+    showGenLoading('hooks', false);
+  }
+}
+
+function renderHooks(hooks) {
+  const list = document.getElementById('hooks-list');
+  list.innerHTML = '';
+  const grouped = {};
+  hooks.forEach(h => {
+    if(!grouped[h.type]) grouped[h.type] = [];
+    grouped[h.type].push(h.hook);
+  });
+  Object.entries(grouped).forEach(([type, hs]) => {
+    const section = document.createElement('div');
+    section.style.marginBottom = '14px';
+    section.innerHTML = `<span class="label">${escHtml(type)}</span>`;
+    hs.forEach(h => {
+      const div = document.createElement('div');
+      div.className = 'hook-alt';
+      div.innerHTML = `<span class="hook-alt-text">"${escHtml(h)}"</span>`;
+      div.onclick = () => {
+        document.getElementById('s-topic').value = h;
+        switchGenTabById('script');
+      };
+      section.appendChild(div);
+    });
+    list.appendChild(section);
+  });
+  document.getElementById('gen-result-hooks').style.display='block';
+}
+
+/* ============ HELPERS ============ */
+function showGenLoading(tab, show) {
+  const out = document.getElementById('gen-output-'+tab);
+  const loading = document.getElementById('gen-loading-'+tab);
+  const result = document.getElementById('gen-result-'+tab);
+  const error = document.getElementById('gen-error-'+tab);
+  const btn = document.getElementById('gen-btn-'+tab);
+
+  if(show) {
+    out.classList.remove('hidden');
+    loading.style.display='flex';
+    if(result) result.style.display='none';
+    if(error) error.style.display='none';
+    if(btn) btn.disabled = true;
+  } else {
+    loading.style.display='none';
+    if(btn) btn.disabled = false;
+  }
+}
+
+function showGenError(tab, msg) {
+  const error = document.getElementById('gen-error-'+tab);
+  if(error){error.style.display='block';error.textContent=msg;}
+}
+
+function switchGenTabById(id) {
+  document.querySelectorAll('.gen-tab').forEach((t,i)=>{
+    const ids=['script','ideas','hooks'];
+    t.classList.toggle('active', ids[i]===id);
+  });
+  document.querySelectorAll('.gen-tab-panel').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('gtp-'+id);
+  if(el) el.classList.add('active');
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ============ IDEA PROCESS — localStorage idea bank ============ */
+const IDEA_BANK_KEY = 'editingspace_idea_bank';
+
+function getIdeaBank() {
+  try {
+    const raw = localStorage.getItem(IDEA_BANK_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveIdea() {
+  const pillar = document.getElementById('ip-pillar').value;
+  const raw = document.getElementById('ip-raw').value.trim();
+  const source = document.getElementById('ip-source').value;
+  const account = document.getElementById('ip-account').value.trim();
+  const hook = document.getElementById('ip-hook').value.trim();
+
+  if(!raw && !hook){ alert('Add a raw idea or a hook attempt first.'); return; }
+
+  const bank = getIdeaBank();
+  bank.unshift({ id: Date.now(), pillar, raw, source, account, hook });
+  try {
+    localStorage.setItem(IDEA_BANK_KEY, JSON.stringify(bank));
+  } catch(e) { /* storage unavailable, ignore */ }
+
+  document.getElementById('ip-raw').value = '';
+  document.getElementById('ip-account').value = '';
+  document.getElementById('ip-hook').value = '';
+  renderIdeaBank();
+}
+
+function deleteIdea(id) {
+  const bank = getIdeaBank().filter(i => i.id !== id);
+  try { localStorage.setItem(IDEA_BANK_KEY, JSON.stringify(bank)); } catch(e){}
+  renderIdeaBank();
+}
+
+function sendIdeaToScript(id) {
+  const bank = getIdeaBank();
+  const idea = bank.find(i => i.id === id);
+  if(!idea) return;
+  const pillarMap = {Proof:'proof', Education:'education', Journey:'journey'};
+  document.getElementById('s-pillar').value = pillarMap[idea.pillar] || 'education';
+  document.getElementById('s-topic').value = (idea.hook || idea.raw || '').slice(0,200);
+  showPage('generator');
+  switchGenTabById('script');
+}
+
+function renderIdeaBank() {
+  const list = document.getElementById('saved-ideas-list');
+  if(!list) return;
+  const bank = getIdeaBank();
+  if(bank.length === 0){ list.innerHTML = ''; return; }
+  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Journey:'var(--dim)'};
+  list.innerHTML = '<span class="label label-teal" style="margin-top:14px;">YOUR IDEA BANK ('+bank.length+')</span>' +
+    bank.map(idea => `
+      <div class="saved-idea">
+        <div class="saved-idea-text">
+          <span class="saved-idea-pillar" style="color:${colors[idea.pillar]||'var(--muted)'};">${escHtml(idea.pillar)} · ${escHtml(idea.source)}${idea.account ? ' · '+escHtml(idea.account) : ''}</span>
+          ${idea.hook ? '"'+escHtml(idea.hook)+'"' : escHtml(idea.raw)}
+        </div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button class="copy-btn" style="float:none;margin:0;" onclick="sendIdeaToScript(${idea.id})">USE</button>
+          <button class="saved-idea-del" onclick="deleteIdea(${idea.id})" aria-label="Delete idea">✕</button>
+        </div>
+      </div>
+    `).join('');
+}
+
+/* Load idea bank whenever the Idea Process page is shown */
+const _origShowPage = showPage;
+showPage = function(id) {
+  _origShowPage(id);
+  if(id === 'ideaprocess') renderIdeaBank();
+};
+
+document.addEventListener('DOMContentLoaded', renderIdeaBank);
 </script>
 </body>
 </html>
