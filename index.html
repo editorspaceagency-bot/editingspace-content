@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EditingSpace — Content & Hook System v2</title>
+<title>EditingSpace — Content & Hook System v3</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -15,6 +15,7 @@
   --green:#2A7A4A;--green-dim:rgba(42,122,74,0.10);--green-border:rgba(42,122,74,0.25);
   --red:#8A2020;--red-dim:rgba(138,32,32,0.10);
   --purple:#5A3A8A;--purple-dim:rgba(90,58,138,0.10);--purple-border:rgba(90,58,138,0.25);
+  --craft:#1A6B55;--craft-dim:rgba(26,107,85,0.10);--craft-border:rgba(26,107,85,0.25);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--white);font-size:14px;line-height:1.6;min-height:100vh;}
 
@@ -240,7 +241,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">EDITINGSPACE <span>/ Content System v2</span></div>
+  <div class="nav-logo">EDITINGSPACE <span>/ Content System v3</span></div>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('research')">Research</button>
     <button class="nav-link" onclick="showPage('hooks')">Hooks</button>
@@ -417,7 +418,17 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
   </div>
 
   <div class="hook-card">
-    <div class="hook-type-badge">TYPE 04 — BEST FOR EDUCATION CONTENT</div>
+    <div class="hook-type-badge" style="color:var(--craft);">TYPE 04 — BEST FOR PRACTICE CONTENT</div>
+    <div class="hook-name">The Skill Drill</div>
+    <div class="hook-formula-box">"I tried [technique/effect] for the first time — here's what happened"</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:6px;">Works best when you film the process, not just the result. Show the failure, the confusion, the breakthrough. The most relatable hooks in this format start with an attempt, not an achievement.</div>
+    <div class="script script-green">"I tried recreating MrBeast's edit style in Premiere — here's what I messed up first"</div>
+    <div class="script script-green">"30-minute speed edit challenge — here's what I actually got done"</div>
+    <div class="hook-formula-box" style="margin-top:10px;">"Editors are sleeping on [technique/tool] — here's why I practice it daily"</div>
+    <div style="font-family:monospace;font-size:9px;color:var(--craft);margin:8px 0 4px;">PRACTICE RULE — Always end with: "Here's what I learned." That one line turns your practice clip into education. Without it, you're just showing footage. With it, you're building authority.</div>
+  </div>
+  <div class="hook-card">
+    <div class="hook-type-badge">TYPE 05 — BEST FOR EDUCATION CONTENT</div>
     <div class="hook-name">Curiosity Gap</div>
     <div class="hook-formula-box">Formula: "The thing nobody tells you about [topic]"</div>
     <span class="label">YOUR EXAMPLES</span>
@@ -668,6 +679,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
       <select class="ws-input" id="ip-pillar">
         <option value="Proof">Proof — before/after</option>
         <option value="Education">Education — tip/framework</option>
+        <option value="Practice">Practice — skill drill in public</option>
         <option value="Journey">Journey — building in public</option>
       </select>
     </div>
@@ -681,7 +693,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
         <option>Source 01 — My own mistake</option>
         <option>Source 02 — Client/viewer question</option>
         <option>Source 03 — Swipe file formula</option>
-        <option>Source 04 — Something I did this week</option>
+        <option>Source 04 — Something I practiced or learned today</option>
         <option>Source 05 — Competitor gap</option>
         <option>Source 06 — Modeling another creator</option>
       </select>
@@ -737,6 +749,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
           <select id="s-pillar">
             <option value="proof">Proof — Before / After Edit</option>
             <option value="education">Education — Tips & Frameworks</option>
+            <option value="practice">Practice — Skill Drill in Public</option>
             <option value="journey">Journey — Building in Public</option>
           </select>
         </div>
@@ -805,9 +818,9 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
         <div class="gen-field">
           <label>HOW MANY IDEAS</label>
           <select id="i-count">
-            <option value="6">6 ideas (2 per pillar)</option>
-            <option value="9" selected>9 ideas (3 per pillar)</option>
-            <option value="12">12 ideas (4 per pillar)</option>
+            <option value="8">8 ideas (2 per pillar)</option>
+            <option value="12" selected>12 ideas (3 per pillar)</option>
+            <option value="16">16 ideas (4 per pillar)</option>
           </select>
         </div>
         <button class="gen-btn" id="gen-btn-ideas" onclick="generateIdeas()">⚡ GENERATE IDEAS</button>
@@ -868,78 +881,110 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
   <div class="s-head">
     <div class="s-eyebrow">SYSTEM 04 — 30-DAY PLAN</div>
     <div class="s-title">You are your first client.</div>
-    <div class="s-sub">Every video you post is a live portfolio piece, an English improvement session, and a proof of concept for EditingSpace. Post 3x per week minimum. Mon / Wed / Fri.</div>
+    <div class="s-sub">Every video you post is a live portfolio piece, an English improvement session, and a proof of concept for EditingSpace. Post 6x per week. Mon (Proof) · Tue (Practice) · Wed (Education) · Thu (Practice) · Fri (Journey) · Sat (Practice).</div>
   </div>
   <div class="divider"></div>
 
   <div class="stat-grid">
-    <div class="stat-box"><div class="stat-num">3x</div><div class="stat-label">per week</div></div>
-    <div class="stat-box"><div class="stat-num">12</div><div class="stat-label">videos month 1</div></div>
+    <div class="stat-box"><div class="stat-num">6x</div><div class="stat-label">per week</div></div>
+    <div class="stat-box"><div class="stat-num">24</div><div class="stat-label">videos month 1</div></div>
     <div class="stat-box"><div class="stat-num">30</div><div class="stat-label">days to proof</div></div>
     <div class="stat-box"><div class="stat-num">Day 31</div><div class="stat-label">outreach starts</div></div>
   </div>
 
   <span class="label" style="margin-top:20px;">CONTENT PILLARS — WEEKLY ROTATION</span>
-  <div class="grid-3" style="margin-bottom:20px;">
+  <div class="alert alert-teal" style="margin-bottom:14px;">
+    Research-backed: 5–6 posts/week in your first 30 days gives the algorithm 2x more data to distribute your content. 3 Practice posts cost near-zero extra effort — you are already practicing. Film what you already do.
+  </div>
+  <div class="grid-3" style="margin-bottom:12px;">
     <div class="card" style="border-top:2px solid var(--orange);">
-      <span class="label">MONDAY — PROOF (40%)</span>
+      <span class="label">MON — PROOF</span>
       <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Before / After edits</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Take a real public video. Re-edit it. Show the comparison. This is your most powerful portfolio piece.</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Take a real public video. Re-edit it. Show the comparison. This is your highest-converting content type. Clients buy after seeing proof.</div>
       <div class="script script-orange">"I re-edited this creator's video — watch the difference"</div>
       <div class="script script-orange">"Before vs after — what professional editing actually looks like"</div>
     </div>
+    <div class="card" style="border-top:2px solid var(--craft);">
+      <span class="label" style="color:var(--craft);">TUE / THU / SAT — PRACTICE</span>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Skill drills in public</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Film what you already practice. Recreate a viral effect. Try a new technique. Copy a creator's style. Always end with: "Here's what I learned." That one line turns practice into education.</div>
+      <div class="script" style="border-left-color:var(--craft);">"I tried recreating this viral transition — here's what happened"</div>
+      <div class="script" style="border-left-color:var(--craft);">"30-minute speed edit challenge — here's my honest result"</div>
+    </div>
     <div class="card" style="border-top:2px solid var(--teal);">
-      <span class="label label-teal">WEDNESDAY — EDUCATION (35%)</span>
+      <span class="label label-teal">WED — EDUCATION</span>
       <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Tips, mistakes, frameworks</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Things creators need to know. Position yourself as the expert, not just the technician.</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">One specific editing tip, technique, or rule. Position yourself as the expert, not just the technician. Specific always beats general.</div>
       <div class="script">"3 editing mistakes killing your retention"</div>
       <div class="script">"The 3-second rule every creator needs to know"</div>
     </div>
+  </div>
+  <div class="grid-3" style="margin-bottom:12px;">
     <div class="card" style="border-top:2px solid var(--dim);">
-      <span class="label label-dim">FRIDAY — JOURNEY (25%)</span>
+      <span class="label label-dim">FRI — JOURNEY</span>
       <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Building in public</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Raw, real, honest. Building EditingSpace from Bangladesh. Your English improving in real time. This builds trust faster than any other content type.</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Raw, real, honest. Building EditingSpace from Bangladesh. English improving in real time. Real numbers, real reactions. Impossible to fake — that's why it builds trust fastest.</div>
       <div class="script script-orange">"Day 1 of building a video editing agency from scratch"</div>
-      <div class="script script-orange">"Honest update — what's working and what's not"</div>
+      <div class="script script-orange">"30-day honest update — real numbers, real results"</div>
+    </div>
+    <div class="card" style="border-top:2px solid var(--craft);grid-column:span 2;">
+      <span class="label" style="color:var(--craft);">PRACTICE POST RULE — APPLIES TO ALL TUE / THU / SAT POSTS</span>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:6px;">Every practice post must end with exactly one line: <strong style="color:var(--white);">"Here's what I learned."</strong> Without it, you're just showing footage. With it, you're building authority. This single sentence turns your practice clip into educational content — which means it attracts clients, not just other editors. Batch all 3 practice posts in one session: same camera setup, 3 different techniques, 30 minutes total filming time.</div>
     </div>
   </div>
 
-  <span class="label">WEEK BY WEEK</span>
+  <span class="label">WEEK BY WEEK — 6 POSTS / WEEK</span>
+
   <div class="week-card">
-    <div class="week-head"><span class="week-num">WEEK 01</span><span class="week-title">Setup & First 3 Videos</span></div>
+    <div class="week-head"><span class="week-num">WEEK 01</span><span class="week-title">Setup & First 6 Posts</span></div>
     <div class="week-body">
-      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Set up TikTok + Instagram properly. Profile photo, bio, link. Bio must say exactly what you do and who you help.</div></div>
-      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 1 — Journey: "Day 1 of building a video editing agency." Raw, honest, direct to camera. Don't overthink it.</div></div>
-      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 2 — Education: Pick one editing tip you know well. Write the script Sunday. Record Wednesday. Edit Thursday. Post Friday.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--orange);">MON</div><div class="day-text"><strong>PROOF —</strong> Set up TikTok + Instagram + YouTube Shorts. Profile photo, bio, link. Bio: exactly what you do, who you help. Post Video 1: a before/after of any edit — even a practice file counts.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">TUE</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 2: "I tried recreating this viral transition for the first time." Screen-record your Premiere timeline as you attempt it. End with one line: "Here's what I learned." Raw beats polished on Day 2.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--teal);">WED</div><div class="day-text"><strong>EDUCATION —</strong> Post Video 3: One editing tip you know cold. Write the script Monday. Record Tuesday after the Practice post. Edit Tuesday night. Post Wednesday morning.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">THU</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 4: Copy a creator's editing style on your own footage. Show the side-by-side. Tag them — creators often reshare this type. Your first potential viral moment.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--dim);">FRI</div><div class="day-text"><strong>JOURNEY —</strong> Post Video 5: "Day 1 of building a video editing agency from Bangladesh." Raw, honest, real numbers (even if zero). Direct to camera. Don't overthink it — authenticity is the strategy here.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">SAT</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 6: 10-minute speed edit challenge. Set a timer. Edit a raw clip in 10 minutes. Show the result and your honest reaction. Batch this with Tuesday and Thursday shoots — same setup, three different techniques.</div></div>
     </div>
   </div>
+
   <div class="week-card">
-    <div class="week-head"><span class="week-num">WEEK 02</span><span class="week-title">First Proof Content</span></div>
+    <div class="week-head"><span class="week-num">WEEK 02</span><span class="week-title">First Real Before/After + Deepen Practice</span></div>
     <div class="week-body">
-      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 3 — First before/after. Find a public YouTube video in your niche. Re-edit it in Premiere. Show the transformation. This is your most important video.</div></div>
-      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 4 — Education: "The one thing killing your video retention." Use hook Type 1 (Mistake Warning).</div></div>
-      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 5 — Journey: "What I learned from my first week posting." Honest. Real numbers. Real reactions.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--orange);">MON</div><div class="day-text"><strong>PROOF —</strong> Post Video 7: First serious before/after. Find a public YouTube video in your niche. Re-edit it in Premiere. Show the full transformation. This is your most important video this month. Take your time on it.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">TUE</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 8: Try a plugin or effect you've never used before. Film yourself figuring it out. Show the confusion and the breakthrough. End: "Here's what I learned in 30 minutes." Real struggle = relatable content.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--teal);">WED</div><div class="day-text"><strong>EDUCATION —</strong> Post Video 9: "The one thing killing your video retention." Use Hook Type 1 (Mistake Warning). This format consistently gets the highest 3-second hold rate — your best tool for the algorithm this week.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">THU</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 10: Recreate a motion graphic from a high-performing video. Break down each step on screen. Post the practice result, not perfection. Label it: "attempt" not "tutorial" — that removes all pressure.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--dim);">FRI</div><div class="day-text"><strong>JOURNEY —</strong> Post Video 11: "What I learned from my first week posting." Real numbers. Real reactions. What worked, what flopped, what you're changing. Specificity makes this hit — vague reflections get skipped.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">SAT</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 12: Colour grading experiment. Pick a cinematic look you love and recreate it from scratch. Show before/during/after. Colour is the fastest way to demonstrate skill level to a potential client watching your profile.</div></div>
     </div>
   </div>
+
   <div class="week-card">
-    <div class="week-head"><span class="week-num">WEEK 03</span><span class="week-title">Find Your Best Hook Type</span></div>
+    <div class="week-head"><span class="week-num">WEEK 03</span><span class="week-title">Test Hooks & Double Down on What Works</span></div>
     <div class="week-body">
-      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 6 — Proof. Second before/after. Different niche this time if possible.</div></div>
-      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 7 — Education. Try hook Type 2 (Contrarian Claim) this week. Compare performance to week 1–2 hooks.</div></div>
-      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 8 — Journey. "The hardest part of building this agency so far." Vulnerability builds audience faster than perfection.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--orange);">MON</div><div class="day-text"><strong>PROOF —</strong> Post Video 13: Second before/after. Different niche this time. If Week 1 was YouTube content, try personal brand or podcast. Variety shows range — range signals agency, not freelancer.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">TUE</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 14: Sound design drill. Take a silent clip and add SFX, music, and ambience from scratch. Show the full audio build. Sound design is the #1 underrated skill in short-form — showing it immediately separates you from other editors.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--teal);">WED</div><div class="day-text"><strong>EDUCATION —</strong> Post Video 15: Hook Type 2 (Contrarian Claim). "Most editors think [X] — they're wrong." Compare 3-second hold rate to Week 1–2 hooks. Note the winner in your weekly ritual. Double down next week.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">THU</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 16: Speed vs quality experiment. Edit the same raw clip twice — 5 minutes vs 45 minutes. Show both results. Ask viewers: "Can you tell the difference?" Comments flood in = strong algorithm signal this week.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--dim);">FRI</div><div class="day-text"><strong>JOURNEY —</strong> Post Video 17: "The hardest part of building this agency so far." Specific, not vague. One concrete challenge, one honest reaction. Vulnerability builds audience faster than a highlight reel. Choose the real story.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">SAT</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 18: Pick your best-performing practice post from Week 1–2. Do a harder version of the same skill. "I tried it again — here's how much I improved." Progress content turns casual viewers into followers who are invested in your growth.</div></div>
     </div>
   </div>
+
   <div class="week-card">
-    <div class="week-head"><span class="week-num">WEEK 04</span><span class="week-title">Review + Outreach Prep</span></div>
+    <div class="week-head"><span class="week-num">WEEK 04</span><span class="week-title">The 30-Day Recap & Outreach Prep</span></div>
     <div class="week-body">
-      <div class="day-row"><div class="day-label">MON</div><div class="day-text">Post Video 9 — Proof. Third before/after. You now have a portfolio of 3 transformation videos.</div></div>
-      <div class="day-row"><div class="day-label">WED</div><div class="day-text">Post Video 10 — Education. Use your best-performing hook type from the past 3 weeks. Double down on what worked.</div></div>
-      <div class="day-row"><div class="day-label">FRI</div><div class="day-text">Post Video 11 — Journey. "30 days of building EditingSpace — here's what happened." Review your numbers. Be honest. This video will perform well.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--orange);">MON</div><div class="day-text"><strong>PROOF —</strong> Post Video 19: Third before/after. You now have 3 transformation videos = a real portfolio. This is the video you send to potential clients starting Day 31. Make it your best one yet.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">TUE</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 20: "I practiced every day for 30 days — here's what changed." Show 3 of your best practice clips side by side. Progress storytelling is the most shareable format available to you right now. This one will travel.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--teal);">WED</div><div class="day-text"><strong>EDUCATION —</strong> Post Video 21: Use your best-performing hook type from the past 3 weeks. Double down on what the data already told you. Don't switch what's already winning just because you're bored of it.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">THU</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 22: Advanced version of Week 1 Practice post. Same technique — but now you're measurably better. Side-by-side of Day 1 vs Day 30 skill level. This is your most powerful trust-builder this month.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--dim);">FRI</div><div class="day-text"><strong>JOURNEY —</strong> Post Video 23: "30 days of building EditingSpace — here's what happened." Real numbers. Every video, every view, every follow. Be brutally honest. This will be your best-performing video. Outreach starts Monday.</div></div>
+      <div class="day-row"><div class="day-label" style="color:var(--craft);">SAT</div><div class="day-text"><strong>PRACTICE —</strong> Post Video 24: Your most ambitious practice post yet. The hardest technique you've been building toward all month. Post the attempt — not just the success. Then DM the 3 creators whose styles you copied this month. That's warm outreach with proof behind it.</div></div>
     </div>
   </div>
 
   <div class="alert alert-teal" style="margin-top:6px;">
-    <strong>Day 31:</strong> You now have 11+ videos, 3 before/after portfolio pieces, a growing audience, and real analytics data. Outreach starts here. Your DMs now have a profile behind them — not a blank page.
+    <strong>Day 31:</strong> You now have 24 videos, 3 before/after portfolio pieces, 9 practice posts showing your growth arc, real analytics data, and a profile that looks active and skilled. Outreach starts here. Your DMs now have a full profile behind them — not a blank page.
   </div>
 </div>
 
@@ -970,7 +1015,7 @@ footer{text-align:center;font-family:monospace;font-size:10px;color:var(--dim);p
     <div class="t-time" style="border-top-color:var(--orange);">SUN<br>4:30 PM</div>
     <div class="t-body">
       <div class="t-label">Plan Next 3 Videos — 10 minutes</div>
-      <div class="t-text">Pick next week's 3 topics. One per pillar. Write the topic and the hook type you'll use. That's it. Don't script yet.</div>
+      <div class="t-text">Pick next week's 6 topics — 1 Proof, 3 Practice, 1 Education, 1 Journey. Write the topic and hook type for each. Batch your 3 Practice posts in one session: same setup, 3 different techniques. Don't script yet — just the direction.</div>
       <div class="pill-row" style="margin-top:8px;">
         <span class="pill-orange pill">MON → Proof topic</span>
         <span class="pill-teal pill">WED → Education topic</span>
@@ -1080,7 +1125,7 @@ function switchGenTab(id) {
 async function callClaude(prompt) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: {"Content-Type": "application/json", "anthropic-version": "2023-06-01", "anthropic-dangerous-request-proxy": "true"},
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
       max_tokens: 1000,
@@ -1110,9 +1155,9 @@ async function generateScript() {
     follow:'ask them to follow for more tips',comment:'ask them to comment a keyword (e.g. AUDIT, EDIT) to get something free',
     dm:'tell them to DM you for a free consultation or audit',save:'ask them to save this video for later'
   };
-  const pillarNames = {proof:'Proof (before/after edit)',education:'Education (tip/framework)',journey:'Journey (building in public)'};
+  const pillarNames = {proof:'Proof (before/after edit)',education:'Education (tip/framework)',practice:'Practice & Craft (skill drill, technique, learning in public)',journey:'Journey (building in public)'};
 
-  const prompt = `You are a short-form video script writer for EditingSpace, a video editing agency run by a creator from Bangladesh. Write a complete ${length}-second TikTok/Instagram script for this video.
+  const prompt = `You are a short-form video script writer for EditingSpace, a video editing & content agency run by a creator from Bangladesh. Write a complete ${length}-second TikTok/Instagram Reels/YouTube Shorts script for this video.
 
 PILLAR: ${pillarNames[pillar]}
 HOOK TYPE: ${hooktypeNames[hooktype]}
@@ -1221,13 +1266,15 @@ async function generateIdeas() {
   const count = document.getElementById('i-count').value;
   if(!niche){alert('Enter your niche first.');return;}
 
-  const perPillar = Math.floor(parseInt(count)/3);
-  const prompt = `You are a content strategist for short-form video. Generate ${count} video ideas for a video editing agency creator (niche: ${niche}).
+  const perPillar = Math.floor(parseInt(count)/4);
+  const prompt = `You are a content strategist for short-form video. Generate ${count} video ideas for EditingSpace, a video editing agency creator from Bangladesh.
 
-Distribute evenly: ${perPillar} Proof ideas, ${perPillar} Education ideas, ${perPillar} Journey ideas.
+Distribute evenly: ${perPillar} Proof ideas, ${perPillar} Education ideas, ${perPillar} Practice & Craft ideas, ${perPillar} Journey ideas.
+
+Proof = before/after edit transformations. Education = tips, frameworks, techniques. Practice = skill drills, technique experiments, learning in public, recreating effects, speed challenges. Journey = building the agency in public.
 
 Each idea should have:
-- pillar: "Proof" or "Education" or "Journey"
+- pillar: "Proof" or "Education" or "Practice" or "Journey"
 - title: short punchy video title (under 10 words)
 - hook: the opening hook line (10-14 words, conversational)
 
@@ -1253,7 +1300,7 @@ OUTPUT ONLY this JSON array, no extra text, no markdown:
 function renderIdeas(ideas) {
   const grid = document.getElementById('ideas-grid');
   grid.innerHTML = '';
-  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Journey:'var(--dim)'};
+  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Practice:'var(--craft)',Journey:'var(--dim)'};
   ideas.forEach(idea => {
     const div = document.createElement('div');
     div.className = 'idea-card';
@@ -1266,6 +1313,7 @@ function renderIdeas(ideas) {
       document.getElementById('s-topic').value = idea.title + ' — ' + idea.hook;
       if(idea.pillar==='Proof') document.getElementById('s-pillar').value='proof';
       else if(idea.pillar==='Education') document.getElementById('s-pillar').value='education';
+      else if(idea.pillar==='Practice') document.getElementById('s-pillar').value='practice';
       else document.getElementById('s-pillar').value='journey';
       switchGenTabById('script');
       showPage('generator');
@@ -1420,7 +1468,7 @@ function sendIdeaToScript(id) {
   const bank = getIdeaBank();
   const idea = bank.find(i => i.id === id);
   if(!idea) return;
-  const pillarMap = {Proof:'proof', Education:'education', Journey:'journey'};
+  const pillarMap = {Proof:'proof', Education:'education', Practice:'practice', Journey:'journey'};
   document.getElementById('s-pillar').value = pillarMap[idea.pillar] || 'education';
   document.getElementById('s-topic').value = (idea.hook || idea.raw || '').slice(0,200);
   showPage('generator');
@@ -1432,7 +1480,7 @@ function renderIdeaBank() {
   if(!list) return;
   const bank = getIdeaBank();
   if(bank.length === 0){ list.innerHTML = ''; return; }
-  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Journey:'var(--dim)'};
+  const colors = {Proof:'var(--orange)',Education:'var(--teal)',Practice:'var(--craft)',Journey:'var(--dim)'};
   list.innerHTML = '<span class="label label-teal" style="margin-top:14px;">YOUR IDEA BANK ('+bank.length+')</span>' +
     bank.map(idea => `
       <div class="saved-idea">
